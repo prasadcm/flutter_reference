@@ -1,3 +1,4 @@
+import 'package:cmp_animated_search/cmp_animated_search.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -5,10 +6,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Center(child: Text('Welcome to the Home Screen!')),
-      ],
-    );
+    return AnimatedSearch();
   }
 }

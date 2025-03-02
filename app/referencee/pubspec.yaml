@@ -16,7 +16,9 @@ dependencies:
   equatable: ^2.0.3
   cmp_widgets:
     path: ../../packages/cmp_widgets
-
+  cmp_animated_search:
+    path: ../../packages/cmp_animated_search
+    
   go_router: ^14.8.0
 
 dev_dependencies:
