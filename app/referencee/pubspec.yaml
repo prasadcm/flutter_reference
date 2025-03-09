@@ -1,7 +1,7 @@
 name: referencee
 description: "A new Flutter project."
 
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -16,9 +16,9 @@ dependencies:
   equatable: ^2.0.3
   cmp_widgets:
     path: ../../packages/cmp_widgets
-  cmp_animated_search:
-    path: ../../packages/cmp_animated_search
-    
+  cmp_search_suggestion:
+    path: ../../packages/cmp_search_suggestion
+
   go_router: ^14.8.0
 
 dev_dependencies:

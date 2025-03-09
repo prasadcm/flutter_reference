@@ -5,9 +5,9 @@ part 'category_model.g.dart';
 @JsonSerializable()
 class CategoryModel {
   final String name;
-  final String icon;
+  final String id;
 
-  CategoryModel(this.name, this.icon);
+  CategoryModel(this.id, this.name);
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) =>
       _$CategoryModelFromJson(json);
