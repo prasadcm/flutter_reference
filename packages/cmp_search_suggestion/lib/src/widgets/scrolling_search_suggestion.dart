@@ -27,7 +27,7 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
 
     _controller = AnimationController(
       duration: const Duration(
-          milliseconds: 1600), // Increased duration for better timing
+          milliseconds: 3000), // Increased duration for better timing
       vsync: this,
     );
 
@@ -37,9 +37,9 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
     ).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.0, 0.1,
+        curve: const Interval(0.0, 0.01,
             curve:
-                Curves.easeIn), // 🔹 Fade-in happens first (10% of total time)
+                Curves.easeIn), // 🔹 Fade-in happens first (5% of total time)
       ),
     );
 
@@ -49,9 +49,7 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
     ).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.6, 1.0,
-            curve: Curves
-                .easeInOut), // 🔹 Scroll happens only after fade-in is complete
+        curve: const Interval(0.8, 1.0, curve: Curves.easeInOut),
       ),
     );
 
@@ -109,10 +107,12 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
                             opacity:
                                 _fadeAnimation, // 🔹 Fade-in happens fully before scrolling
                             child: Text(
-                              _suggestion,
-                              style: const TextStyle(
-                                  fontSize: 16, color: Colors.black54),
-                            ),
+                                _suggestion.isNotEmpty
+                                    ? "Search for \"$_suggestion\""
+                                    : "",
+                                style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Color.fromRGBO(0, 0, 0, 1.0))),
                           ),
                         );
                       },
