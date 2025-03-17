@@ -24,8 +24,25 @@ jobs:
         with:
           flutter-version: 3.16.0 # Change to your required Flutter version
 
-      - name: Install Dependencies
-        run: flutter pub get
+      - name: Find All Packages
+        id: list-packages
+        run: |
+          echo "PACKAGES=$(find . -name 'pubspec.yaml' -exec dirname {} \; | tr '\n' ' ')" >> $GITHUB_ENV
 
-      - name: Run Linter
-        run: dart analyze
+      - name: Install Dependencies
+        run: |
+          for package in $PACKAGES; do
+            echo "Installing dependencies in $package"
+            cd $package
+            flutter pub get
+            cd -
+          done
+
+      - name: Run Linter on All Packages
+        run: |
+          for package in $PACKAGES; do
+            echo "Running dart analyze in $package"
+            cd $package
+            dart analyze
+            cd -
+          done
