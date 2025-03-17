@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/category_item_bloc.dart';
+import '../bloc/suggestions_bloc.dart';
 
 class ScrollingSearchSuggestion extends StatefulWidget {
   const ScrollingSearchSuggestion({super.key});
@@ -16,40 +16,40 @@ class ScrollingSearchSuggestion extends StatefulWidget {
 class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<Offset> _animation;
-  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _animationTop;
+  late Animation<Offset> _animationBottom;
+  bool _flipAnimation = true;
   Timer? _timer;
-  String _suggestion = '';
+  int _counter = 0;
+  List<String> _suggestions = ["items"];
+  String _suggestion = "items";
 
   @override
   void initState() {
     super.initState();
 
     _controller = AnimationController(
-      duration: const Duration(
-          milliseconds: 3000), // Increased duration for better timing
+      duration: const Duration(milliseconds: 500),
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.0, 0.01,
-            curve:
-                Curves.easeIn), // 🔹 Fade-in happens first (5% of total time)
-      ),
-    );
-
-    _animation = Tween<Offset>(
+    _animationTop = Tween<Offset>(
       begin: Offset.zero,
       end: const Offset(0, -1),
     ).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.8, 1.0, curve: Curves.easeInOut),
+        curve: const Interval(0, 0.8, curve: Curves.easeInOut),
+      ),
+    );
+
+    _animationBottom = Tween<Offset>(
+      begin: const Offset(0, 1),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0, 0.8, curve: Curves.easeInOut),
       ),
     );
 
@@ -57,9 +57,20 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
   }
 
   void _startScrolling() {
-    _timer = Timer.periodic(const Duration(seconds: 2), (timer) {
+    _timer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
       _controller.forward().then((_) {
-        context.read<CategoryItemBloc>().add(EmitRandomCategoryItem());
+        _flipAnimation = !_flipAnimation;
+        if (!_flipAnimation) {
+          _counter++;
+          if (_counter >= _suggestions.length) {
+            _counter = 0;
+          }
+        }
+        setState(() {
+          _suggestion = _suggestions[_counter];
+          _controller.reset(); // Reset for next cycle
+        });
+        //context.read (<CategoryItemBloc>().add(EmitRandomCategoryItem());
       });
     });
   }
@@ -73,12 +84,9 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CategoryItemBloc, CategoryItemState>(
+    return BlocConsumer<SuggestionsBloc, SuggestionsState>(
       listener: (context, state) {
-        setState(() {
-          _suggestion = state.categoryItem;
-          _controller.reset(); // Reset for next cycle
-        });
+        _suggestions = state.suggestions;
       },
       builder: (context, state) {
         return Padding(
@@ -102,18 +110,15 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
                       animation: _controller,
                       builder: (context, child) {
                         return SlideTransition(
-                          position: _animation,
-                          child: FadeTransition(
-                            opacity:
-                                _fadeAnimation, // 🔹 Fade-in happens fully before scrolling
-                            child: Text(
-                                _suggestion.isNotEmpty
-                                    ? "Search for \"$_suggestion\""
-                                    : "",
-                                style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Color.fromRGBO(0, 0, 0, 1.0))),
-                          ),
+                          position:
+                              _flipAnimation ? _animationTop : _animationBottom,
+                          child: Text(
+                              _suggestions.isNotEmpty
+                                  ? "Search for \"$_suggestion\""
+                                  : "",
+                              style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Color.fromRGBO(0, 0, 0, 1.0))),
                         );
                       },
                     ),

@@ -9,7 +9,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          CategoryItemBloc(categoriesRepository: CategoriesRepository()),
+          SuggestionsBloc(suggestionsRepository: SuggestionsRepository()),
       child: ScrollingSearchSuggestion(),
     );
   }

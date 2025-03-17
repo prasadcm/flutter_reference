@@ -8,7 +8,7 @@ environment:
 
 flutter:
   assets:
-    - assets/categories.json
+    - assets/suggestions.json
 
 dependencies:
   flutter:

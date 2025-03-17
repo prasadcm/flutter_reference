@@ -1,0 +1,31 @@
+name: Flutter Linting
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  lint:
+    name: Run Flutter Linting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.16.0 # Change to your required Flutter version
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Run Linter
+        run: dart analyze
