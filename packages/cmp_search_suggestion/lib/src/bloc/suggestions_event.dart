@@ -7,4 +7,4 @@ abstract class SuggestionsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class EmitSuggestions extends SuggestionsEvent {}
+class FetchSuggestions extends SuggestionsEvent {}

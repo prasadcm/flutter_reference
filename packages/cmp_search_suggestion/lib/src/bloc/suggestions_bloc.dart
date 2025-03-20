@@ -11,29 +11,29 @@ part 'suggestions_state.dart';
 
 class SuggestionsBloc extends Bloc<SuggestionsEvent, SuggestionsState> {
   final SuggestionsRepository suggestionsRepository;
-  List<String> _categories = [];
 
   SuggestionsBloc({required this.suggestionsRepository})
-      : super(SuggestionsState([])) {
-    on<EmitSuggestions>(_emitCategories);
-    _fetchCategories();
+      : super(SuggestionsInitial()) {
+    on<FetchSuggestions>(_fetchSuggestions);
   }
 
-  void _emitCategories(
-    EmitSuggestions event,
+  Future<void> _fetchSuggestions(
+    FetchSuggestions event,
     Emitter<SuggestionsState> emit,
-  ) {
-    emit(SuggestionsState(_categories));
-  }
-
-  Future<void> _fetchCategories() async {
+  ) async {
+    emit(SuggestionsLoading());
     try {
-      List<SuggestionModel> categoriesList =
+      List<SuggestionModel> suggestionsList =
           await suggestionsRepository.loadSuggestions();
-      if (categoriesList.isNotEmpty) {
-        _categories = categoriesList.map((e) => e.name).toList();
+
+      if (suggestionsList.isNotEmpty) {
+        List<String> suggestions = suggestionsList.map((e) => e.name).toList();
+        emit(SuggestionsLoaded(suggestions));
+      } else {
+        emit(SuggestionsLoaded([]));
       }
-      add(EmitSuggestions());
-    } catch (_) {}
+    } catch (_) {
+      emit(SuggestionsFailedLoading());
+    }
   }
 }
