@@ -20,13 +20,6 @@ jobs:
     needs: setup
 
     steps:
-      - name: Install Melos if Not Cached
-        run: |
-          if ! command -v melos &> /dev/null
-          then
-            dart pub global activate melos
-          fi
-
       - name: Run analyze on all packages
         run: |
           melos analyze

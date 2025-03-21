@@ -30,11 +30,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pub-
 
-      - name: Install Melos
-        run: dart pub global activate melos
+      - name: Setup melos
+        uses: bluefireteam/melos-action@v3
+      # - name: Install Melos
+      #   run: dart pub global activate melos
 
-      - name: Verify Melos Installation
-        run: which melos && melos --version
+      # - name: Verify Melos Installation
+      #   run: which melos && melos --version
 
-      - name: Bootstrap Melos
-        run: melos bootstrap --no-private
+      # - name: Bootstrap Melos
+      #   run: melos bootstrap --no-private
