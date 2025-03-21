@@ -39,9 +39,6 @@ jobs:
       - name: Setup melos
         uses: bluefireteam/melos-action@v3
 
-      - name: Show PATH
-        run: echo $GITHUB_PATH
-
       - name: Save PATH
         id: save-path
-        run: echo "github_path=$GITHUB_PATH" >> $GITHUB_OUTPUT
+        run: echo "github_path=$HOME/.pub-cache/bin" >> $GITHUB_OUTPUT
