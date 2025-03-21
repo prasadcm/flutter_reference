@@ -16,6 +16,7 @@ jobs:
 
   lint:
     name: Run flutter tests
+    needs: setup
     runs-on: ubuntu-latest
 
     steps:

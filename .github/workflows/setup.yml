@@ -1,11 +1,7 @@
 name: Reusable Setup
 
 on:
-  workflow_call:
-    outputs:
-      packages:
-        description: "List of found packages"
-        value: ${{ jobs.setup.outputs.found_packages }}
+  workflow_call: # Makes this a reusable workflow
 
 jobs:
   setup:

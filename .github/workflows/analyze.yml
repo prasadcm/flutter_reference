@@ -14,9 +14,10 @@ jobs:
   setup:
     uses: ./.github/workflows/setup.yml
 
-  lint:
+  analyze:
     name: Run flutter analyze
     runs-on: ubuntu-latest
+    needs: setup
 
     steps:
       - name: Run analyze on all packages
