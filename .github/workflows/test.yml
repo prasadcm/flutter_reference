@@ -12,7 +12,7 @@ on:
 
 jobs:
   setup:
-    uses: ./.github/workflows/flutter_setup.yml
+    uses: ./flutter_setup.yml
 
   lint:
     name: Run Flutter tests
