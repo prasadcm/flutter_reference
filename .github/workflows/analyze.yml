@@ -22,4 +22,4 @@ jobs:
     steps:
       - name: Run analyze on all packages
         run: |
-          melos analyze
+          $HOME/.pub-cache/bin/melos analyze
