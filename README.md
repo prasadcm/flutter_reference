@@ -47,3 +47,16 @@ On the root of the project, run the `melos test` command.
 ```sh
     $melos test
 ```
+
+## Best practices
+
+### Monorepo using melos
+
+This project makes use of monorepo with usage of packages, modules and application projects.
+It makes use of `melos` as CLI tool.
+
+### Github actions
+
+It defines analyze and test actions
+
+### Pre-commit hooks by huskey
