@@ -1,0 +1,29 @@
+name: Testing
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  setup:
+    uses: ./.github/workflows/setup.yml
+
+  lint:
+    name: Run Flutter tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run Linter on All Packages
+        run: |
+          for package in ${{ steps.list-packages.outputs.packages }}; do
+            echo "Running dart analyze in $package"
+            cd $package
+            flutter test
+            cd -
+          done
