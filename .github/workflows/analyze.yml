@@ -1,4 +1,4 @@
-name: Testing
+name: Analyze
 
 on:
   push:
@@ -15,10 +15,10 @@ jobs:
     uses: ./.github/workflows/setup.yml
 
   lint:
-    name: Run flutter tests
+    name: Run flutter analyze
     runs-on: ubuntu-latest
 
     steps:
-      - name: Run tests on all packages
+      - name: Run analyze on all packages
         run: |
-          melos test
+          melos analyze

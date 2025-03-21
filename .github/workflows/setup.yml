@@ -10,8 +10,6 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
-    outputs:
-      found_packages: ${{ steps.list-packages.outputs.packages }}
 
     steps:
       - name: Checkout Repository
@@ -24,17 +22,20 @@ jobs:
           channel: "stable"
           cache: true
 
-      - name: Find All Packages
-        id: list-packages
-        run: |
-          PACKAGES=$(find . -name 'pubspec.yaml' -exec dirname {} \; | tr '\n' ' ')
-          echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
+      - name: Cache Pub Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ env.PUB_CACHE }}
+            **/.dart_tool
+            **/.flutter-plugins
+            **/.flutter-plugins-dependencies
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
 
-      - name: Install Dependencies
-        run: |
-          for package in ${{ steps.list-packages.outputs.packages }}; do
-            echo "Installing dependencies in $package"
-            cd $package
-            flutter pub get
-            cd -
-          done
+      - name: Install Melos
+        run: dart pub global activate melos
+
+      - name: Bootstrap Melos
+        run: melos bootstrap --no-private
