@@ -20,6 +20,9 @@ jobs:
     needs: setup
 
     steps:
+      - name: Restore PATH
+        run: echo "${{ needs.setup.outputs.github_path }}"
+
       - name: Run analyze on all packages
         run: |
           melos analyze

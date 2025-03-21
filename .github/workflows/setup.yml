@@ -2,10 +2,16 @@ name: Reusable Setup
 
 on:
   workflow_call: # Makes this a reusable workflow
+    outputs:
+      github_path:
+        description: "Pass the udpated GITHUB_PATH environment variable to other workflows"
+        value: ${{ jobs.setup.outputs.github_path }}
 
 jobs:
   setup:
     runs-on: ubuntu-latest
+    outputs:
+      github_path: ${{ steps.save-path.outputs.github_path }}
 
     steps:
       - name: Checkout Repository
@@ -32,11 +38,7 @@ jobs:
 
       - name: Setup melos
         uses: bluefireteam/melos-action@v3
-      # - name: Install Melos
-      #   run: dart pub global activate melos
 
-      # - name: Verify Melos Installation
-      #   run: which melos && melos --version
-
-      # - name: Bootstrap Melos
-      #   run: melos bootstrap --no-private
+      - name: Save PATH
+        id: save-path
+        run: echo "github_path=$GITHUB_PATH" >> $GITHUB_OUTPUT
