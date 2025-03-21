@@ -21,7 +21,10 @@ jobs:
 
     steps:
       - name: Restore PATH
-        run: echo "${{ needs.setup.outputs.github_path }}"
+        run: echo "${{ needs.setup.outputs.github_path }}" >> $GITHUB_PATH
+
+      - name: Show path
+        run: echo $GITHUB_PATH
 
       - name: Run analyze on all packages
         run: |
