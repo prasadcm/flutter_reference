@@ -31,7 +31,9 @@ jobs:
             ${{ runner.os }}-pub-
 
       - name: Install Melos
-        run: dart pub global activate melos
+        run: |
+          dart pub global activate melos
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
 
       - name: Bootstrap Melos
         run: melos bootstrap --no-private
