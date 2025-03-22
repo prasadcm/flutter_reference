@@ -30,4 +30,4 @@ jobs:
       - name: Run analyze on all packages
         run: |
           echo $PATH
-          melos analyze
+          flutter analyze
