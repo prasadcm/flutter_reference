@@ -1,44 +1,44 @@
-name: Reusable Setup
+# name: Reusable Setup
 
-on:
-  workflow_call: # Makes this a reusable workflow
-    outputs:
-      github_path:
-        description: "Pass the udpated GITHUB_PATH environment variable to other workflows"
-        value: ${{ jobs.setup.outputs.github_path }}
+# on:
+#   workflow_call: # Makes this a reusable workflow
+#     outputs:
+#       github_path:
+#         description: "Pass the udpated GITHUB_PATH environment variable to other workflows"
+#         value: ${{ jobs.setup.outputs.github_path }}
 
-jobs:
-  setup:
-    runs-on: ubuntu-latest
-    outputs:
-      github_path: ${{ steps.save-path.outputs.github_path }}
+# jobs:
+#   setup:
+#     runs-on: ubuntu-latest
+#     outputs:
+#       github_path: ${{ steps.save-path.outputs.github_path }}
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout Repository
+#         uses: actions/checkout@v4
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.x"
-          channel: "stable"
-          cache: true
+#       - name: Setup Flutter
+#         uses: subosito/flutter-action@v2
+#         with:
+#           flutter-version: "3.x"
+#           channel: "stable"
+#           cache: true
 
-      # - name: Cache Pub Dependencies
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: |
-      #       ${{ env.PUB_CACHE }}
-      #       **/.dart_tool
-      #       **/.flutter-plugins
-      #       **/.flutter-plugins-dependencies
-      #     key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-pub-
+#       # - name: Cache Pub Dependencies
+#       #   uses: actions/cache@v3
+#       #   with:
+#       #     path: |
+#       #       ${{ env.PUB_CACHE }}
+#       #       **/.dart_tool
+#       #       **/.flutter-plugins
+#       #       **/.flutter-plugins-dependencies
+#       #     key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+#       #     restore-keys: |
+#       #       ${{ runner.os }}-pub-
 
-      - name: Setup melos
-        uses: bluefireteam/melos-action@v3
+#       - name: Setup melos
+#         uses: bluefireteam/melos-action@v3
 
-      - name: Save PATH
-        id: save-path
-        run: echo "github_path=$HOME/.pub-cache/bin" >> $GITHUB_OUTPUT
+#       - name: Save PATH
+#         id: save-path
+#         run: echo "github_path=$HOME/.pub-cache/bin" >> $GITHUB_OUTPUT
