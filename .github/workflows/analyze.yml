@@ -46,10 +46,7 @@ jobs:
 
       - name: Run analyze on all packages
         run: |
-          echo "PWD: "
-          pwd
-          echo "ls: "
-          ls .
+          melos analyze
       #    cd apps/reference
       #    flutter analyze
       #    echo $PATH
