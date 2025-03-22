@@ -11,13 +11,30 @@ on:
       - develop
 
 jobs:
+  # setup:
+  #   uses: ./.github/workflows/setup.yml
   setup:
-    uses: ./.github/workflows/setup.yml
+    name: Run setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"
+          channel: "stable"
+          cache: true
+
+      - name: Setup melos
+        uses: bluefireteam/melos-action@v3
 
   analyze:
     name: Run flutter analyze
     runs-on: ubuntu-latest
-    needs: setup
+    #needs: setup
 
     steps:
       # - name: Restore PATH
@@ -29,7 +46,7 @@ jobs:
 
       - name: Run analyze on all packages
         run: |
-          echo "PWD: " 
+          echo "PWD: "
           pwd
           echo "ls: "
           ls .
