@@ -30,4 +30,5 @@ jobs:
       - name: Run analyze on all packages
         run: |
           echo $PATH
+          cd ./apps/reference
           flutter analyze
