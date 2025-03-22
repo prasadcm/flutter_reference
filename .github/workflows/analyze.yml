@@ -13,11 +13,25 @@ on:
 jobs:
   # setup:
   #   uses: ./.github/workflows/setup.yml
-  setup:
-    name: Run setup
+  # setup:
+  #   name: Run setup
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+
+  analyze:
+    name: Run flutter analyze
     runs-on: ubuntu-latest
+    # needs: setup
 
     steps:
+      # - name: Restore PATH
+      #   run: |
+      #     echo "${{ needs.setup.outputs.github_path }}" >> $GITHUB_PATH
+
+      # - name: Show path
+      #   run: echo $PATH
+
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -31,21 +45,9 @@ jobs:
       - name: Setup melos
         uses: bluefireteam/melos-action@v3
 
-  analyze:
-    name: Run flutter analyze
-    runs-on: ubuntu-latest
-    needs: setup
-
-    steps:
-      # - name: Restore PATH
-      #   run: |
-      #     echo "${{ needs.setup.outputs.github_path }}" >> $GITHUB_PATH
-
-      # - name: Show path
-      #   run: echo $PATH
-
       - name: Run analyze on all packages
         run: |
+          ls .
           melos analyze
       #    cd apps/reference
       #    flutter analyze
