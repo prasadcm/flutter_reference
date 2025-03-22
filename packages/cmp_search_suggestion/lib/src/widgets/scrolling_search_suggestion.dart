@@ -66,7 +66,7 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
           }
           _controller.reset(); // Reset for next cycle
         });
-        if (!_flipAnimation) {
+        if (_flipAnimation) {
           _counter++;
           if (_counter >= _suggestions.length) {
             _counter = 0;

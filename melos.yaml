@@ -1,0 +1,20 @@
+name: flutter_reference
+
+packages:
+  - apps/**
+  - packages/**
+  - modules/**
+
+scripts:
+  analyze:
+    run: flutter analyze .
+    exec:
+      concurrency: 1
+  format:
+    run: dart format --set-exit-if-changed .
+    exec:
+      concurrency: 1
+  test:
+    run: flutter test .
+    exec:
+      concurrency: 1

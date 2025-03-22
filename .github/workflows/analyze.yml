@@ -1,22 +1,12 @@
-name: Test Workflow
-
+name: Analyze Workflow
 on:
   push:
     branches:
-      - main
-      - develop
-  pull_request:
-    branches:
-      - main
-      - develop
-  workflow_run:
-    workflows: ["Analyze Workflow"]
-    types:
-      - completed
+      - "**"
 
 jobs:
-  test:
-    name: Run flutter test
+  analyze:
+    name: Run flutter analyze
     runs-on: ubuntu-latest
 
     steps:
@@ -33,6 +23,6 @@ jobs:
       - name: Setup melos
         uses: bluefireteam/melos-action@v3
 
-      - name: Run test on all packages
+      - name: Run analyze on all packages
         run: |
-          melos test
+          melos analyze
