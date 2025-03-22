@@ -13,23 +13,11 @@ on:
 jobs:
   # setup:
   #   uses: ./.github/workflows/setup.yml
-  setup:
-    name: Run setup
-    runs-on: ubuntu-latest
+  # setup:
+  #   name: Run setup
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.x"
-          channel: "stable"
-          cache: true
-
-      - name: Setup melos
-        uses: bluefireteam/melos-action@v3
+  #   steps:
 
   analyze:
     name: Run flutter analyze
@@ -43,6 +31,19 @@ jobs:
 
       # - name: Show path
       #   run: echo $PATH
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.x"
+          channel: "stable"
+          cache: true
+
+      - name: Setup melos
+        uses: bluefireteam/melos-action@v3
 
       - name: Run analyze on all packages
         run: |
