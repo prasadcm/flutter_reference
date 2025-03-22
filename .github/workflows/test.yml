@@ -1,10 +1,6 @@
 name: Test Workflow
 
 on:
-  push:
-    branches:
-      - main
-      - develop
   pull_request:
     branches:
       - main
@@ -13,6 +9,9 @@ on:
     workflows: ["Analyze Workflow"]
     types:
       - completed
+    branches:
+      - main
+      - develop
 
 jobs:
   test:
