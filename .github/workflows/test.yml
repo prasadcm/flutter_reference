@@ -5,13 +5,6 @@ on:
     branches:
       - "main"
       - "develop"
-  # workflow_run:
-  #   workflows: ["Analyze Workflow"]
-  #   types:
-  #     - completed
-  #   branches:
-  #     - main
-  #     - develop
 
 jobs:
   test:
