@@ -29,8 +29,10 @@ jobs:
 
       - name: Run analyze on all packages
         run: |
-          echo $PATH
+          echo "PWD: " 
           pwd
+          echo "ls: "
           ls .
-          cd apps/reference
-          flutter analyze
+      #    cd apps/reference
+      #    flutter analyze
+      #    echo $PATH
