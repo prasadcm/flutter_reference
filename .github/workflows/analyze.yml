@@ -31,5 +31,6 @@ jobs:
         run: |
           echo $PATH
           pwd
+          ls .
           cd apps/reference
           flutter analyze
