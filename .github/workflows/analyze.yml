@@ -30,5 +30,6 @@ jobs:
       - name: Run analyze on all packages
         run: |
           echo $PATH
+          pwd
           cd ./apps/reference
           flutter analyze
