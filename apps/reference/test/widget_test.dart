@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:referencee/features/profile/widgets/profile_screen.dart';
+import 'package:referencee/features/settings/widgets/settings_screen.dart';
 import 'package:referencee/main.dart';
 import 'package:referencee/routing/main_screen.dart';
 
@@ -12,13 +15,45 @@ void main() {
         ReferenceApp(),
       );
 
-      // Verify app title
-      //expect(find.text('Reference App'), findsOneWidget);
-
       // Verify initial route is loaded
       expect(find.byType(MainScreen), findsOneWidget);
     });
 
+    testWidgets('should show Settings page', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ReferenceApp(),
+      );
+
+      await tester.tap(find.byIcon(Icons.settings));
+      await tester.pumpAndSettle();
+
+      // Verify initial route is loaded
+      expect(find.byType(SettingsScreen), findsOneWidget);
+    });
+
+    testWidgets('should show Settings page', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ReferenceApp(),
+      );
+
+      await tester.tap(find.byIcon(Icons.settings));
+      await tester.pumpAndSettle();
+
+      // Verify initial route is loaded
+      expect(find.byType(SettingsScreen), findsOneWidget);
+    });
+
+    testWidgets('should show ProfileScreen page', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        ReferenceApp(),
+      );
+
+      await tester.tap(find.byIcon(Icons.person));
+      await tester.pumpAndSettle();
+
+      // Verify initial route is loaded
+      expect(find.byType(ProfileScreen), findsOneWidget);
+    });
     //   testWidgets('should handle navigation between pages',
     //       (WidgetTester tester) async {
     //     await tester.pumpWidget(
