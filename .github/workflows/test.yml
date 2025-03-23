@@ -24,6 +24,9 @@ jobs:
       - name: Setup melos
         uses: bluefireteam/melos-action@v3
 
+      - name: Install lcov
+        run: sudo apt-get install -y lcov
+
       - name: Run test on all packages
         run: |
           melos test
