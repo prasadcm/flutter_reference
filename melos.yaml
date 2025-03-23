@@ -23,7 +23,7 @@ scripts:
     description: Runs flutter test on all packages.
     run: |
       flutter test --coverage .
-      lcov --summary coverage/lcov.info
+      lcov --summary coverage/lcov.info| grep "lines.......:";
       #COVERAGE=\$(lcov --summary coverage/lcov.info | grep "lines.......:" | awk '{print \$2}' | sed 's/%//');
       #echo "coverage \\$COVERAGE";
       # if (( \$(echo "\$COVERAGE < 80" | bc -l) )); then
