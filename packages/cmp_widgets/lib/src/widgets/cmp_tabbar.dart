@@ -17,8 +17,8 @@ class CMPTabbarWidget extends StatelessWidget {
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
+            icon: Icon(Icons.category),
+            label: 'Categories',
           ),
           NavigationDestination(
             icon: Icon(Icons.person),

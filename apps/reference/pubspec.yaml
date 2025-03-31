@@ -18,6 +18,8 @@ dependencies:
     path: ../../packages/cmp_widgets
   cmp_search_suggestion:
     path: ../../packages/cmp_search_suggestion
+  cmp_categories:
+    path: ../../packages/cmp_categories
 
   go_router: ^14.8.0
 

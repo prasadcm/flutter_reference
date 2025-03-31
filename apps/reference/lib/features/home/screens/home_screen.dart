@@ -10,7 +10,23 @@ class HomeScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           SuggestionsBloc(suggestionsRepository: SuggestionsRepository()),
-      child: ScrollingSearchSuggestion(),
+      child:
+          Scaffold(appBar: _appBar(), body: const ScrollingSearchSuggestion()),
+    );
+  }
+
+  PreferredSizeWidget _appBar() {
+    return AppBar(
+      title: Center(
+        child: Text(
+          "Home",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20, // Adjust size if needed
+          ),
+        ),
+      ),
     );
   }
 }
