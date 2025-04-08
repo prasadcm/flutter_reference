@@ -36,10 +36,9 @@ class MockSuggestionsRepository extends _i1.Mock
   @override
   _i3.Future<List<_i4.SuggestionModel>> loadSuggestions() =>
       (super.noSuchMethod(
-            Invocation.method(#loadSuggestions, []),
-            returnValue: _i3.Future<List<_i4.SuggestionModel>>.value(
-              <_i4.SuggestionModel>[],
-            ),
-          )
-          as _i3.Future<List<_i4.SuggestionModel>>);
+        Invocation.method(#loadSuggestions, []),
+        returnValue: _i3.Future<List<_i4.SuggestionModel>>.value(
+          <_i4.SuggestionModel>[],
+        ),
+      ) as _i3.Future<List<_i4.SuggestionModel>>);
 }
