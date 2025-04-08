@@ -46,7 +46,7 @@ void main() {
       );
 
       // Tap on the second tab
-      await tester.tap(find.byIcon(Icons.settings));
+      await tester.tap(find.byIcon(Icons.category));
       await tester.pumpAndSettle();
 
       // Verify the second tab is selected

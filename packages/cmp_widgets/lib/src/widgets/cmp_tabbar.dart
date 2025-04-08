@@ -11,6 +11,7 @@ class CMPTabbarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return NavigationBar(
         selectedIndex: selectedTabIndex,
+        indicatorColor: Colors.transparent,
         destinations: [
           NavigationDestination(
             icon: Icon(Icons.home),

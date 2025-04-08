@@ -28,7 +28,8 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
       List<CategoryModel> categoriesList =
           await categoriesRepository.loadCategories();
       if (categoriesList.isNotEmpty) {
-        emit(CategoriesLoaded(convertToSections(categoriesList)));
+        List<CategorySection> sections = _convertToSections(categoriesList);
+        emit(CategoriesLoaded(sections));
       } else {
         emit(CategoriesLoaded([]));
       }
@@ -37,7 +38,7 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
     }
   }
 
-  List<CategorySection> convertToSections(List<CategoryModel> categories) {
+  List<CategorySection> _convertToSections(List<CategoryModel> categories) {
     Map<String, List<CategoryModel>> groupedCategories = {};
 
     for (var category in categories) {

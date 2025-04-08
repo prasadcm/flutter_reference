@@ -48,6 +48,22 @@ On the root of the project, run the `melos test` command.
     $melos test
 ```
 
+## How to clean all the generated files like build, coverage etc
+
+On the root of the project, run the `melos test` command.
+
+```sh
+    $melos clean-all
+```
+
+## How to re-generate the anotation classes, mock classes
+
+On the root of the project, run the `melos test` command.
+
+```sh
+    $melos generate
+```
+
 ## Best practices
 
 ### Monorepo using melos

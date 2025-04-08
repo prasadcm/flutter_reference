@@ -10,7 +10,7 @@ class CategoryItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 130,
+      width: 94,
       margin: const EdgeInsets.all(1.0),
       child: Card(
         elevation: 1,
@@ -40,7 +40,7 @@ class CategoryItemWidget extends StatelessWidget {
                 children: [
                   Text(
                     item.name,
-                    style: Theme.of(context).textTheme.labelMedium,
+                    style: Theme.of(context).textTheme.labelSmall,
                   ),
                 ],
               ),

@@ -5,16 +5,35 @@ class AppThemes {
     brightness: Brightness.light,
     primaryColor: Colors.blue,
     scaffoldBackgroundColor: Colors.white,
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: Colors.white, // Background color
+      indicatorColor: Colors.transparent, // Highlight for selected item
+      labelTextStyle:
+          WidgetStateProperty.resolveWith<TextStyle>((Set<WidgetState> states) {
+        if (states.contains(WidgetState.selected)) {
+          return TextStyle(color: Colors.blue, fontWeight: FontWeight.bold);
+        }
+        return TextStyle(color: Colors.grey);
+      }),
+      iconTheme: WidgetStateProperty.resolveWith<IconThemeData>(
+        (Set<WidgetState> states) {
+          if (states.contains(WidgetState.selected)) {
+            return IconThemeData(color: Colors.blue, size: 30); // Selected icon
+          }
+          return IconThemeData(color: Colors.grey, size: 24); // Unselected icon
+        },
+      ),
+    ),
     appBarTheme: AppBarTheme(
-      backgroundColor: Colors.blue,
+      backgroundColor: Colors.white,
       centerTitle: true,
       titleTextStyle: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: Colors.white,
+        color: Colors.black45,
       ),
       iconTheme:
-          IconThemeData(color: Colors.white), // Ensures icons match the theme
+          IconThemeData(color: Colors.black45), // Ensures icons match the theme
     ),
     textTheme: TextTheme(
       bodyLarge: TextStyle(fontSize: 16, color: Colors.black),
@@ -66,6 +85,25 @@ class AppThemes {
         color: Colors.white,
       ),
       iconTheme: IconThemeData(color: Colors.white),
+    ),
+    navigationBarTheme: NavigationBarThemeData(
+      backgroundColor: Colors.white, // Background color
+      indicatorColor: Colors.transparent, // Highlight for selected item
+      labelTextStyle:
+          WidgetStateProperty.resolveWith<TextStyle>((Set<WidgetState> states) {
+        if (states.contains(WidgetState.selected)) {
+          return TextStyle(color: Colors.blue, fontWeight: FontWeight.bold);
+        }
+        return TextStyle(color: Colors.grey);
+      }),
+      iconTheme: WidgetStateProperty.resolveWith<IconThemeData>(
+        (Set<WidgetState> states) {
+          if (states.contains(WidgetState.selected)) {
+            return IconThemeData(color: Colors.blue, size: 30); // Selected icon
+          }
+          return IconThemeData(color: Colors.grey, size: 24); // Unselected icon
+        },
+      ),
     ),
     textTheme: TextTheme(
       bodyLarge: TextStyle(fontSize: 16, color: Colors.black),
