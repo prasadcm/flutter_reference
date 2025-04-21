@@ -1,6 +1,6 @@
-import 'package:cmp_search_suggestion/cmp_search_suggestion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:search_suggestion/search_suggestion.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

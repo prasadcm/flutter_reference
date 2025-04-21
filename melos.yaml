@@ -3,7 +3,6 @@ name: flutter_reference
 packages:
   - apps/**
   - packages/**
-  - modules/**
 
 scripts:
   analyze:
@@ -32,7 +31,7 @@ scripts:
       fi
     exec:
       concurrency: 1
-  generate:
+  generate-all:
     name: Generate
     description: Runs build_runner on all packages.
     run: |
@@ -41,7 +40,31 @@ scripts:
       concurrency: 1
   clean-all:
     name: Clean
-    description: Removes all generated files.
-    run: rm -rf .dart_tool build coverage coverage.html
+    description: Runs flutter clean on all packages.
+    run: flutter clean
     exec:
       concurrency: 1
+  get-all:
+    name: Get
+    description: Runs flutter pub get on all packages.
+    run: flutter pub get
+    exec:
+      concurrency: 1
+  rebuild-all:
+    name: Rebuild all the projects
+    description: It runs a flutter clean on all packages and gets the depenendencies
+    run: |
+      set -e
+      melos run clean-all
+      melos run get-all
+      melos run generate-all
+  start:
+    name: Start the app
+    run: |
+      cd apps/reference
+      if ! xcrun simctl list | grep -q "Booted"; then
+        echo "No iOS Simulator is running. Starting one..."
+        open -a Simulator
+        sleep 30
+      fi
+      flutter run --flavor development --dart-define=FLAVOR=dev

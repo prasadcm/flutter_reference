@@ -1,4 +1,4 @@
-name: referencee
+name: reference
 description: "A new Flutter project."
 
 publish_to: "none"
@@ -14,12 +14,16 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_bloc: ^9.0.0
   equatable: ^2.0.3
-  cmp_widgets:
-    path: ../../packages/cmp_widgets
-  cmp_search_suggestion:
-    path: ../../packages/cmp_search_suggestion
-  cmp_categories:
-    path: ../../packages/cmp_categories
+  ui_components:
+    path: ../../packages/ui_components
+  search_suggestion:
+    path: ../../packages/search_suggestion
+  categories:
+    path: ../../packages/categories
+  core:
+    path: ../../packages/core
+  network:
+    path: ../../packages/network
 
   go_router: ^14.8.0
 
@@ -29,6 +33,9 @@ dev_dependencies:
 
   flutter_lints: ^5.0.0
   mockito: ^5.0.0
+  mocktail: ^1.0.4
+  get_it: ^8.0.3
+  bloc_test: ^10.0.0
 
 flutter:
   uses-material-design: true

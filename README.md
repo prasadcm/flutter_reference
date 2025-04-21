@@ -28,8 +28,7 @@ Run the `melos bootstrap` in the root folder.
 ### Run the app
 
 ```sh
-    $cd apps\reference
-    $flutter run
+    $melos start
 ```
 
 ## How to run the code analysis
@@ -50,7 +49,7 @@ On the root of the project, run the `melos test` command.
 
 ## How to clean all the generated files like build, coverage etc
 
-On the root of the project, run the `melos test` command.
+On the root of the project, run the `melos clean-all` command.
 
 ```sh
     $melos clean-all
@@ -58,10 +57,26 @@ On the root of the project, run the `melos test` command.
 
 ## How to re-generate the anotation classes, mock classes
 
-On the root of the project, run the `melos test` command.
+On the root of the project, run the `melos generate-all` command.
 
 ```sh
-    $melos generate
+    $melos generate-all
+```
+
+## How to re build the app. Rebuilding will clean all the packages and regenerates it
+
+On the root of the project, run the `melos rebuild-all` command.
+
+```sh
+    $melos rebuild-all
+```
+
+## How to create a new package
+
+On the root of the project, run the `./scripts/create_package.sh` command.
+
+```sh
+    $melos ./scripts/create_package.sh
 ```
 
 ## Best practices

@@ -1,7 +1,7 @@
-import 'package:cmp_widgets/cmp_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:ui_components/ui_components.dart';
 
-import '../features/categories/screens/categories_screen.dart';
+import '../features/categories/screens/category_screen.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/profile/widgets/profile_screen.dart';
 
@@ -18,7 +18,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: CMPTabbarWidget(
+        bottomNavigationBar: TabbarWidget(
           selectedTabIndex: currentPageIndex,
           onTabSelected: (index) {
             setState(() {
@@ -28,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
         body: [
           HomeScreen(),
-          CategoriesScreen(),
+          CategoryScreen(),
           ProfileScreen()
         ][currentPageIndex]);
   }

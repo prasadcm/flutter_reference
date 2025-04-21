@@ -1,23 +1,15 @@
-import 'package:cmp_widgets/cmp_widgets.dart';
+import 'package:categories/categories.dart';
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:network/network.dart';
 
-import 'routing/app_router.dart';
+import 'app.dart';
 
-// Example Usage
-class ReferenceApp extends StatelessWidget {
-  const ReferenceApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: router,
-      theme: AppThemes.lightTheme,
-      darkTheme: AppThemes.darkTheme,
-      themeMode: ThemeMode.system,
-    );
-  }
+void main() {
+  CoreServiceLocator.setup();
+  NetworkServiceLocator.setup();
+  CategoryServiceLocator.setup();
+  runApp(
+    const ReferenceApp(),
+  );
 }
-
-void main() => runApp(
-      ReferenceApp(),
-    );
