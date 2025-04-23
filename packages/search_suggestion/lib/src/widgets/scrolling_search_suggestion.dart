@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../bloc/suggestions_bloc.dart';
+import 'package:search_suggestion/src/bloc/suggestions_bloc.dart';
 
 class ScrollingSearchSuggestion extends StatefulWidget {
   const ScrollingSearchSuggestion({super.key});
@@ -22,8 +21,8 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
   bool _flipAnimation = true;
   Timer? _timer;
   int _counter = 0;
-  List<String> _suggestions = ["items"];
-  String _suggestion = "items";
+  List<String> _suggestions = ['items'];
+  String _suggestion = 'items';
 
   @override
   void initState() {
@@ -102,7 +101,7 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
             decoration: BoxDecoration(
               color: Colors.grey[200],
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.grey, width: 1),
+              border: Border.all(color: Colors.grey),
             ),
             child: Row(
               children: [
@@ -117,10 +116,13 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
                           position: _flipAnimation
                               ? _scrollCenterToUp
                               : _scrollBottomToCenter,
-                          child: Text("Search for \"$_suggestion\"",
-                              style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Color.fromRGBO(0, 0, 0, 1.0))),
+                          child: Text(
+                            'Search for "$_suggestion"',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Color.fromRGBO(0, 0, 0, 1),
+                            ),
+                          ),
                         );
                       },
                     ),

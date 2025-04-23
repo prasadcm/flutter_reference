@@ -12,9 +12,8 @@ class SuggestionsInitial extends SuggestionsState {}
 class SuggestionsLoading extends SuggestionsState {}
 
 class SuggestionsLoaded extends SuggestionsState {
-  final dynamic _suggestions;
-
   const SuggestionsLoaded(this._suggestions);
+  final List<String> _suggestions;
 
   List<String> get getSuggestions => _suggestions;
 

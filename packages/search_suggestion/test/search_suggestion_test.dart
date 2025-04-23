@@ -4,19 +4,17 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:search_suggestion/search_suggestion.dart';
 
-import 'search_suggestion_test.mocks.dart';
+class MockSuggestionsRepository extends Mock implements SuggestionsRepository {}
 
-@GenerateMocks([SuggestionsRepository])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   Future<void> waitForDelay(WidgetTester tester, Duration duration) async {
     await tester.runAsync(() async {
-      await Future.delayed(duration);
+      await Future<void>.delayed(duration);
     });
   }
 
@@ -29,8 +27,8 @@ void main() {
       mockRepository = MockSuggestionsRepository();
       suggestionBloc = SuggestionsBloc(suggestionsRepository: mockRepository);
       mockSuggestions = [
-        SuggestionModel("1", "Apple"),
-        SuggestionModel("2", "Banana"),
+        SuggestionModel('1', 'Apple'),
+        SuggestionModel('2', 'Banana'),
       ];
     });
 
@@ -39,36 +37,40 @@ void main() {
     });
 
     blocTest<SuggestionsBloc, SuggestionsState>(
-        'emits [SuggestionsLoading, SuggestionsLoaded] when FetchSuggestions is triggered',
-        build: () {
-          when(mockRepository.loadSuggestions())
-              .thenAnswer((_) async => mockSuggestions);
-          return suggestionBloc;
-        },
-        act: (bloc) => bloc.add(FetchSuggestions()),
-        expect: () => [
-              SuggestionsLoading(),
-              SuggestionsLoaded(["Apple", "Banana"])
-            ]);
+      'emits [SuggestionsLoading, SuggestionsLoaded] when FetchSuggestions is triggered',
+      build: () {
+        when(() => mockRepository.loadSuggestions())
+            .thenAnswer((_) async => mockSuggestions);
+        return suggestionBloc;
+      },
+      act: (bloc) => bloc.add(FetchSuggestions()),
+      expect: () => [
+        SuggestionsLoading(),
+        const SuggestionsLoaded(['Apple', 'Banana']),
+      ],
+    );
 
     blocTest<SuggestionsBloc, SuggestionsState>(
-        'emits [SuggestionsLoading, SuggestionsFailedLoading] when repository fails to load',
-        build: () {
-          when(mockRepository.loadSuggestions())
-              .thenThrow(Exception('Failed to load suggestions'));
-          return suggestionBloc;
-        },
-        act: (bloc) => bloc.add(FetchSuggestions()),
-        expect: () => [SuggestionsLoading(), SuggestionsFailedLoading()]);
+      'emits [SuggestionsLoading, SuggestionsFailedLoading] when repository fails to load',
+      build: () {
+        when(() => mockRepository.loadSuggestions())
+            .thenThrow(Exception('Failed to load suggestions'));
+        return suggestionBloc;
+      },
+      act: (bloc) => bloc.add(FetchSuggestions()),
+      expect: () => [SuggestionsLoading(), SuggestionsFailedLoading()],
+    );
 
     blocTest<SuggestionsBloc, SuggestionsState>(
-        'emits [SuggestionsLoading, SuggestionsLoaded] when suggestions are empty',
-        build: () {
-          when(mockRepository.loadSuggestions()).thenAnswer((_) async => []);
-          return suggestionBloc;
-        },
-        act: (bloc) => bloc.add(FetchSuggestions()),
-        expect: () => [SuggestionsLoading(), SuggestionsLoaded([])]);
+      'emits [SuggestionsLoading, SuggestionsLoaded] when suggestions are empty',
+      build: () {
+        when(() => mockRepository.loadSuggestions())
+            .thenAnswer((_) async => []);
+        return suggestionBloc;
+      },
+      act: (bloc) => bloc.add(FetchSuggestions()),
+      expect: () => [SuggestionsLoading(), const SuggestionsLoaded([])],
+    );
   });
 
   group('SuggestionsRepository Tests with data', () {
@@ -78,7 +80,7 @@ void main() {
       // Register mock asset bundle
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMessageHandler('flutter/assets', (message) {
-        const String mockJsonData = '''
+        const mockJsonData = '''
         [
           { "id": "0", "name": "Biscuits" },
           { "id": "1", "name": "Orange" },
@@ -124,9 +126,9 @@ void main() {
       mockRepository = MockSuggestionsRepository();
       suggestionBloc = SuggestionsBloc(suggestionsRepository: mockRepository);
       mockSuggestions = [
-        SuggestionModel("0", "Apple"),
-        SuggestionModel("1", "Banana"),
-        SuggestionModel("2", "Cherry"),
+        SuggestionModel('0', 'Apple'),
+        SuggestionModel('1', 'Banana'),
+        SuggestionModel('2', 'Cherry'),
       ];
     });
 
@@ -148,14 +150,14 @@ void main() {
     testWidgets(
         'should show suggestions and animate them when state is SuggestionsLoaded',
         (WidgetTester tester) async {
-      when(mockRepository.loadSuggestions())
+      when(() => mockRepository.loadSuggestions())
           .thenAnswer((_) async => mockSuggestions);
 
       await tester.pumpWidget(createWidgetUnderTest());
 
       expect(find.text('Search for "items"'), findsOneWidget);
 
-      await waitForDelay(tester, const Duration(milliseconds: 0));
+      await waitForDelay(tester, Duration.zero);
 
       await tester.pump(const Duration(milliseconds: 500));
       await tester.pumpAndSettle();

@@ -2,20 +2,17 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-
-import '../data/suggestion_model.dart';
-import '../data/suggestions_repository.dart';
+import 'package:search_suggestion/src/data/suggestions_repository.dart';
 
 part 'suggestions_event.dart';
 part 'suggestions_state.dart';
 
 class SuggestionsBloc extends Bloc<SuggestionsEvent, SuggestionsState> {
-  final SuggestionsRepository suggestionsRepository;
-
   SuggestionsBloc({required this.suggestionsRepository})
       : super(SuggestionsInitial()) {
     on<FetchSuggestions>(_fetchSuggestions);
   }
+  final SuggestionsRepository suggestionsRepository;
 
   Future<void> _fetchSuggestions(
     FetchSuggestions event,
@@ -23,16 +20,15 @@ class SuggestionsBloc extends Bloc<SuggestionsEvent, SuggestionsState> {
   ) async {
     emit(SuggestionsLoading());
     try {
-      List<SuggestionModel> suggestionsList =
-          await suggestionsRepository.loadSuggestions();
+      final suggestionsList = await suggestionsRepository.loadSuggestions();
 
       if (suggestionsList.isNotEmpty) {
-        List<String> suggestions = suggestionsList.map((e) => e.name).toList();
+        final suggestions = suggestionsList.map((e) => e.name).toList();
         emit(SuggestionsLoaded(suggestions));
       } else {
-        emit(SuggestionsLoaded([]));
+        emit(const SuggestionsLoaded(<String>[]));
       }
-    } catch (_) {
+    } on Exception {
       emit(SuggestionsFailedLoading());
     }
   }
