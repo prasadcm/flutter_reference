@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:search_suggestion/src/data/suggestions_repository.dart';
+import 'package:suggestions/src/data/suggestions_repository.dart';
 
 part 'suggestions_event.dart';
 part 'suggestions_state.dart';
@@ -18,18 +19,24 @@ class SuggestionsBloc extends Bloc<SuggestionsEvent, SuggestionsState> {
     FetchSuggestions event,
     Emitter<SuggestionsState> emit,
   ) async {
+    final cache = suggestionsRepository.cachedSuggestions;
+    final isCacheValid = suggestionsRepository.isCacheValid;
+    if (cache != null && isCacheValid) {
+      emit(SuggestionsLoaded(suggestions: cache));
+      return;
+    }
     emit(SuggestionsLoading());
     try {
       final suggestionsList = await suggestionsRepository.loadSuggestions();
-
-      if (suggestionsList.isNotEmpty) {
-        final suggestions = suggestionsList.map((e) => e.name).toList();
-        emit(SuggestionsLoaded(suggestions));
+      emit(SuggestionsLoaded(suggestions: suggestionsList));
+    } on SocketException {
+      if (cache != null) {
+        emit(SuggestionsOffline(cachedSuggestions: cache));
       } else {
-        emit(const SuggestionsLoaded(<String>[]));
+        emit(const SuggestionsOffline());
       }
     } on Exception {
-      emit(SuggestionsFailedLoading());
+      emit(SuggestionsFailedLoading(cachedSuggestions: cache));
     }
   }
 }

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:search_suggestion/src/bloc/suggestions_bloc.dart';
+import 'package:suggestions/suggestions.dart';
 
 class ScrollingSearchSuggestion extends StatefulWidget {
   const ScrollingSearchSuggestion({super.key});
@@ -52,6 +52,7 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
         curve: const Interval(0, 0.8, curve: Curves.easeInOut),
       ),
     );
+
     context.read<SuggestionsBloc>().add(FetchSuggestions());
   }
 

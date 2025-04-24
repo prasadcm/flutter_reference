@@ -1,6 +1,7 @@
-name: search_suggestion
-description: "A package for scrollable search text view."
+name: suggestions
+description: "A package for suggestions"
 version: 0.0.1
+publish_to: "none"
 
 environment:
   sdk: ^3.6.1
@@ -8,8 +9,6 @@ environment:
 
 flutter:
   uses-material-design: true
-  assets:
-    - assets/suggestions.json
 
 dependencies:
   bloc: ^9.0.0
@@ -17,7 +16,10 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.0
+  get_it: ^8.0.3
   json_annotation: ^4.9.0
+  network:
+    path: ../../packages/network
 
 dev_dependencies:
   bloc_test: ^10.0.0
