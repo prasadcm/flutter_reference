@@ -1,8 +1,9 @@
-import 'package:cmp_widgets/cmp_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:referencee/features/home/screens/home_screen.dart';
-import 'package:referencee/features/profile/widgets/profile_screen.dart';
-import 'package:referencee/features/settings/widgets/settings_screen.dart';
+import 'package:ui_components/ui_components.dart';
+
+import '../features/categories/screens/category_screen.dart';
+import '../features/home/screens/home_screen.dart';
+import '../features/profile/widgets/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -17,10 +18,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Home Screen"),
-        ),
-        bottomNavigationBar: CMPTabbarWidget(
+        bottomNavigationBar: TabbarWidget(
           selectedTabIndex: currentPageIndex,
           onTabSelected: (index) {
             setState(() {
@@ -30,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
         body: [
           HomeScreen(),
-          SettingsScreen(),
+          CategoryScreen(),
           ProfileScreen()
         ][currentPageIndex]);
   }

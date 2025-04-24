@@ -1,19 +1,17 @@
+import 'package:categories/categories.dart';
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:network/network.dart';
+import 'package:suggestions/suggestions.dart';
 
-import 'routing/app_router.dart';
+import 'app.dart';
 
-// Example Usage
-class ReferenceApp extends StatelessWidget {
-  const ReferenceApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: router,
-    );
-  }
+void main() {
+  CoreServiceLocator.setup();
+  NetworkServiceLocator.setup();
+  CategoryServiceLocator.setup();
+  SuggestionServiceLocator.setup();
+  runApp(
+    const ReferenceApp(),
+  );
 }
-
-void main() => runApp(
-      ReferenceApp(),
-    );

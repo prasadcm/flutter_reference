@@ -1,0 +1,35 @@
+name: categories
+description: "Categories package project."
+version: 0.0.1
+publish_to: "none"
+environment:
+  sdk: ^3.7.2
+  flutter: ">=1.17.0"
+
+dependencies:
+  bloc: ^9.0.0
+  equatable: ^2.0.7
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^9.1.0
+  get_it: ^8.0.3
+  json_annotation: ^4.9.0
+  network:
+    path: ../../packages/network
+  ui_components:
+    path: ../../packages/ui_components
+
+dev_dependencies:
+  bloc_test: ^10.0.0
+  build_runner: ^2.4.15
+  flutter_lints: ^5.0.0
+  flutter_test:
+    sdk: flutter
+  json_serializable: ^6.9.4
+  mocktail: ^1.0.4
+  very_good_analysis: ^7.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/categories/

@@ -6,3 +6,5 @@ environment:
 dev_dependencies:
   melos: ^6.3.2
   husky: ^0.1.7
+dependencies:
+  flutter_riverpod: ^2.6.1
