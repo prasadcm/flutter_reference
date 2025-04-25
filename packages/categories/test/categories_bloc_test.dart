@@ -23,26 +23,31 @@ void main() {
       mockCategories = [
         CategorySection(
           title: 'Grocery & Kitchen',
+          sequence: 1,
           items: [
             CategoryItem(
               id: '1',
               name: 'Fruits & Vegetables',
               imageUrl: 'assets/images/categories/fruits.jpg',
+              sequence: 1,
             ),
             CategoryItem(
               id: '2',
               name: 'Dairy, Bread & Eggs',
               imageUrl: 'assets/images/categories/dairy.jpg',
+              sequence: 2,
             ),
           ],
         ),
         CategorySection(
           title: 'Personal Care',
+          sequence: 2,
           items: [
             CategoryItem(
               id: '1',
               name: 'Bath & Body',
               imageUrl: 'assets/images/categories/bath.jpg',
+              sequence: 1,
             ),
           ],
         ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:suggestions/suggestions.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -7,13 +7,11 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = suggestionLocator<SuggestionsBloc>();
-
-    return BlocProvider(
-      create: (context) => bloc,
-      child:
-          Scaffold(appBar: _appBar(), body: const ScrollingSearchSuggestion()),
-    );
+    return Scaffold(
+        appBar: _appBar(),
+        body: ScrollingSearchSuggestion(
+          onTap: () => context.push('/search'),
+        ));
   }
 
   PreferredSizeWidget _appBar() {

@@ -50,25 +50,37 @@ class CategoriesRepository {
   ) {
     final groupedCategories = <String, List<CategoryModel>>{};
 
+    // Group items by category name
     for (final category in categories) {
       groupedCategories.putIfAbsent(category.name, () => []).add(category);
     }
 
-    // Convert to CategorySection list
-    return groupedCategories.entries.map((entry) {
-      return CategorySection(
-        title: entry.key,
-        items:
-            entry.value
-                .map(
-                  (category) => CategoryItem(
+    // Map and sort each section
+    final sections =
+        groupedCategories.entries.map((entry) {
+          final sortedItems =
+              entry.value
+                ..sort((a, b) => a.itemSequence.compareTo(b.itemSequence));
+
+          return CategorySection(
+            title: entry.key,
+            sequence: sortedItems.first.categorySequence,
+            items:
+                sortedItems.map((category) {
+                  return CategoryItem(
                     id: category.categoryId,
                     name: category.item,
                     imageUrl: category.image,
-                  ),
-                )
-                .toList(),
-      );
-    }).toList();
+                    sequence: category.itemSequence,
+                  );
+                }).toList(),
+          );
+        }).toList();
+
+    // Sort the final list of sections by categorySequence
+    // ignore: cascade_invocations
+    sections.sort((a, b) => a.sequence.compareTo(b.sequence));
+
+    return sections;
   }
 }
