@@ -27,8 +27,9 @@ void main() {
     setUp(() {
       mockSuggestionsBloc = MockSuggestionsBloc();
       mockCategoriesBloc = MockCategoriesBloc();
-      getIt.registerSingleton<SuggestionsBloc>(mockSuggestionsBloc);
-      getIt.registerSingleton<CategoriesBloc>(mockCategoriesBloc);
+      getIt
+        ..registerSingleton<SuggestionsBloc>(mockSuggestionsBloc)
+        ..registerSingleton<CategoriesBloc>(mockCategoriesBloc);
       when(() => mockSuggestionsBloc.state).thenReturn(SuggestionsInitial());
       when(() => mockCategoriesBloc.state).thenReturn(CategoriesInitial());
     });
@@ -41,11 +42,11 @@ void main() {
         (WidgetTester tester) async {
       whenListen(
         mockSuggestionsBloc,
-        Stream.fromIterable([SuggestionsLoaded(suggestions: [])]),
+        Stream.fromIterable([const SuggestionsLoaded(suggestions: [])]),
         initialState: SuggestionsLoading(),
       );
       await tester.pumpWidget(
-        ReferenceApp(),
+        const ReferenceApp(),
       );
 
       // Verify initial route is loaded
@@ -54,7 +55,7 @@ void main() {
 
     testWidgets('should show Profile page', (WidgetTester tester) async {
       await tester.pumpWidget(
-        ReferenceApp(),
+        const ReferenceApp(),
       );
 
       await tester.tap(find.byIcon(Icons.person));
@@ -69,12 +70,12 @@ void main() {
 
       whenListen(
         mockCategoriesBloc,
-        Stream.fromIterable([CategoriesLoaded(categories: [])]),
+        Stream.fromIterable([const CategoriesLoaded(categories: [])]),
         initialState: CategoriesLoading(),
       );
 
       await tester.pumpWidget(
-        ReferenceApp(),
+        const ReferenceApp(),
       );
 
       await tester.tap(find.byIcon(Icons.category));
@@ -92,8 +93,9 @@ void main() {
     setUp(() {
       mockSuggestionsBloc = MockSuggestionsBloc();
       mockCategoriesBloc = MockCategoriesBloc();
-      getIt.registerSingleton<SuggestionsBloc>(mockSuggestionsBloc);
-      getIt.registerSingleton<CategoriesBloc>(mockCategoriesBloc);
+      getIt
+        ..registerSingleton<SuggestionsBloc>(mockSuggestionsBloc)
+        ..registerSingleton<CategoriesBloc>(mockCategoriesBloc);
       when(() => mockSuggestionsBloc.state).thenReturn(SuggestionsInitial());
       when(() => mockCategoriesBloc.state).thenReturn(CategoriesInitial());
     });
@@ -107,11 +109,11 @@ void main() {
         (WidgetTester tester) async {
       whenListen(
         mockSuggestionsBloc,
-        Stream.fromIterable([SuggestionsLoaded(suggestions: [])]),
+        Stream.fromIterable([const SuggestionsLoaded(suggestions: [])]),
         initialState: SuggestionsLoading(),
       );
       await tester.pumpWidget(
-        ReferenceApp(),
+        const ReferenceApp(),
       );
 
       // Verify initial route is loaded

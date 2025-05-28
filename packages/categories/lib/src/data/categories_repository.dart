@@ -1,18 +1,18 @@
 import 'package:categories/src/data/category_item.dart';
 import 'package:categories/src/data/category_model.dart';
 import 'package:categories/src/data/category_section.dart';
+import 'package:core/core.dart';
 import 'package:network/network.dart';
 
 class CategoriesRepository {
-  CategoriesRepository(this._apiClient);
-  final ApiClient _apiClient;
-  List<CategorySection>? _cachedCategories;
-  DateTime? _cacheTimestamp;
-  Duration cacheValidity = const Duration(hours: 2);
+  CategoriesRepository({required this.apiClient, required this.cacheService});
+  final ApiClient apiClient;
+  final CacheService cacheService;
+  CacheEntry<List<CategorySection>>? _cacheEntry;
 
   Future<List<CategorySection>> loadCategories() async {
     try {
-      final response = await _apiClient.get(ApiEndpoints.categories);
+      final response = await apiClient.get(ApiEndpoints.categories);
       final jsonList = response['data'] as List<dynamic>;
       final categories =
           jsonList
@@ -20,29 +20,48 @@ class CategoriesRepository {
                 (json) => CategoryModel.fromJson(json as Map<String, dynamic>),
               )
               .toList();
-      _cachedCategories = _transformToCategorySections(categories);
-      return _cachedCategories!;
+      final categorySections = _transformToCategorySections(categories);
+      await saveToCache(categorySections);
+      return categorySections;
     } catch (e) {
       throw Exception('Failed to fetch categories: $e');
     }
   }
 
-  // ignore: unnecessary_getters_setters
-  List<CategorySection>? get cachedCategories => _cachedCategories;
-
-  set cachedCategories(List<CategorySection>? categories) {
-    _cachedCategories = categories;
-    _cacheTimestamp = DateTime.now();
+  CacheEntry<List<CategorySection>>? get cachedCategories {
+    if (_cacheEntry == null || _cacheEntry!.isExpired == true) {
+      _cacheEntry = cacheService.read<List<CategorySection>>(
+        key: 'Categories',
+        decode:
+            (raw) =>
+                (raw as List)
+                    .map(
+                      (item) => CategorySection.fromJson(
+                        (item as Map).map((k, v) => MapEntry(k.toString(), v)),
+                      ),
+                    )
+                    .toList(),
+      );
+    }
+    return _cacheEntry;
   }
 
-  bool get isCacheValid {
-    if (_cachedCategories == null || _cacheTimestamp == null) return false;
-    return DateTime.now().difference(_cacheTimestamp!) < cacheValidity;
+  Future<void> saveToCache(List<CategorySection>? categories) async {
+    if (categories != null) {
+      await cacheService.write<List<CategorySection>>(
+        key: 'Categories',
+        value: categories,
+        ttlHrs: 2,
+        encode:
+            (sections) => sections.map((section) => section.toJson()).toList(),
+      );
+      _cacheEntry = null;
+    }
   }
 
   void clearCache() {
-    _cachedCategories = null;
-    _cacheTimestamp = null;
+    cacheService.delete('Categories');
+    _cacheEntry = null;
   }
 
   List<CategorySection> _transformToCategorySections(

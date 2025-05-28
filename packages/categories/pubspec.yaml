@@ -8,6 +8,8 @@ environment:
 
 dependencies:
   bloc: ^9.0.0
+  core:
+    path: ../../packages/core
   equatable: ^2.0.7
   flutter:
     sdk: flutter
@@ -27,6 +29,7 @@ dev_dependencies:
     sdk: flutter
   json_serializable: ^6.9.4
   mocktail: ^1.0.4
+  remove_from_coverage: ^2.0.0
   very_good_analysis: ^7.0.0
 
 flutter:

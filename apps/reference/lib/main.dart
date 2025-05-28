@@ -2,12 +2,13 @@ import 'package:categories/categories.dart';
 import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:network/network.dart';
+import 'package:reference/app.dart';
 import 'package:suggestions/suggestions.dart';
 
-import 'app.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-void main() {
-  CoreServiceLocator.setup();
+  await CoreServiceLocator.setup();
   NetworkServiceLocator.setup();
   CategoryServiceLocator.setup();
   SuggestionServiceLocator.setup();

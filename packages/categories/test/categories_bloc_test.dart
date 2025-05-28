@@ -4,6 +4,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:categories/categories.dart';
 import 'package:categories/src/data/category_item.dart';
 import 'package:categories/src/data/category_section.dart';
+import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -16,6 +17,7 @@ void main() {
     late MockCategoriesRepository mockRepository;
     late CategoriesBloc categoriesBloc;
     late List<CategorySection> mockCategories;
+    late CacheEntry<List<CategorySection>> mockCacheEntry;
 
     setUp(() {
       mockRepository = MockCategoriesRepository();
@@ -52,6 +54,8 @@ void main() {
           ],
         ),
       ];
+      final expiry = DateTime.now().add(const Duration(hours: 1));
+      mockCacheEntry = CacheEntry(value: mockCategories, expiry: expiry);
     });
 
     tearDown(() {
@@ -65,7 +69,6 @@ void main() {
           mockRepository.loadCategories,
         ).thenAnswer((_) async => mockCategories);
         when(() => mockRepository.cachedCategories).thenReturn(null);
-        when(() => mockRepository.isCacheValid).thenReturn(false);
         return categoriesBloc;
       },
       act: (bloc) => bloc.add(FetchCategories()),
@@ -83,7 +86,6 @@ void main() {
           mockRepository.loadCategories,
         ).thenThrow(Exception('Failed to load categories'));
         when(() => mockRepository.cachedCategories).thenReturn(null);
-        when(() => mockRepository.isCacheValid).thenReturn(false);
         return categoriesBloc;
       },
       act: (bloc) => bloc.add(FetchCategories()),
@@ -93,11 +95,12 @@ void main() {
     blocTest<CategoriesBloc, CategoriesState>(
       'emits [CategoriesLoading, CategoriesFailedLoading] when repository fails to load but expired cache exists',
       build: () {
+        final expiry = DateTime.now().subtract(const Duration(hours: 1));
+        final expiredCache = CacheEntry(value: mockCategories, expiry: expiry);
         when(
           mockRepository.loadCategories,
         ).thenThrow(Exception('Failed to load categories'));
-        when(() => mockRepository.cachedCategories).thenReturn(mockCategories);
-        when(() => mockRepository.isCacheValid).thenReturn(false);
+        when(() => mockRepository.cachedCategories).thenReturn(expiredCache);
         return categoriesBloc;
       },
       act: (bloc) => bloc.add(FetchCategories()),
@@ -113,7 +116,6 @@ void main() {
       build: () {
         when(mockRepository.loadCategories).thenAnswer((_) async => []);
         when(() => mockRepository.cachedCategories).thenReturn(null);
-        when(() => mockRepository.isCacheValid).thenReturn(false);
         return categoriesBloc;
       },
       act: (bloc) => bloc.add(FetchCategories()),
@@ -127,8 +129,7 @@ void main() {
         when(
           mockRepository.loadCategories,
         ).thenAnswer((_) async => mockCategories);
-        when(() => mockRepository.cachedCategories).thenReturn(mockCategories);
-        when(() => mockRepository.isCacheValid).thenReturn(true);
+        when(() => mockRepository.cachedCategories).thenReturn(mockCacheEntry);
         return categoriesBloc;
       },
       act: (bloc) => bloc.add(FetchCategories()),
@@ -142,7 +143,6 @@ void main() {
           mockRepository.loadCategories,
         ).thenThrow(const SocketException('No Internet'));
         when(() => mockRepository.cachedCategories).thenReturn(null);
-        when(() => mockRepository.isCacheValid).thenReturn(false);
         return categoriesBloc;
       },
       act: (bloc) => bloc.add(FetchCategories()),
@@ -152,11 +152,12 @@ void main() {
     blocTest<CategoriesBloc, CategoriesState>(
       'emits [CategoriesLoading, CategoriesOffline] when offline with expired cache',
       build: () {
+        final expiry = DateTime.now().subtract(const Duration(hours: 1));
+        final expiredCache = CacheEntry(value: mockCategories, expiry: expiry);
         when(
           mockRepository.loadCategories,
         ).thenThrow(const SocketException('No Internet'));
-        when(() => mockRepository.cachedCategories).thenReturn(mockCategories);
-        when(() => mockRepository.isCacheValid).thenReturn(false);
+        when(() => mockRepository.cachedCategories).thenReturn(expiredCache);
         return categoriesBloc;
       },
       act: (bloc) => bloc.add(FetchCategories()),

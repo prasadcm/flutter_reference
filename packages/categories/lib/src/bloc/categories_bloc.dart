@@ -21,9 +21,8 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
     Emitter<CategoriesState> emit,
   ) async {
     final cache = categoriesRepository.cachedCategories;
-    final isCacheValid = categoriesRepository.isCacheValid;
-    if (cache != null && isCacheValid) {
-      emit(CategoriesLoaded(categories: cache));
+    if (cache != null && cache.isExpired == false) {
+      emit(CategoriesLoaded(categories: cache.value));
       return;
     }
     emit(CategoriesLoading());
@@ -32,12 +31,12 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
       emit(CategoriesLoaded(categories: categoriesList));
     } on SocketException {
       if (cache != null) {
-        emit(CategoriesOffline(cachedCategories: cache));
+        emit(CategoriesOffline(cachedCategories: cache.value));
       } else {
         emit(const CategoriesOffline());
       }
     } on Exception {
-      emit(CategoriesFailedLoading(cachedCategories: cache));
+      emit(CategoriesFailedLoading(cachedCategories: cache?.value));
     }
   }
 }

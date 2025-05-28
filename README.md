@@ -47,6 +47,16 @@ On the root of the project, run the `melos test` command.
     $melos test
 ```
 
+### How to view the coverage report
+
+Go into the specific package folder say packages/core and run the following commands.
+It will open the coverage report
+
+```sh
+genhtml coverage/lcov.info -o coverage/html
+open coverage/html/index.html
+```
+
 ## How to clean all the generated files like build, coverage etc
 
 On the root of the project, run the `melos clean-all` command.

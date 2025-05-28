@@ -3,11 +3,14 @@ import 'dart:convert';
 import 'package:categories/categories.dart';
 import 'package:categories/src/data/category_item.dart';
 import 'package:categories/src/data/category_section.dart';
+import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:network/network.dart';
 
 class MockApiClient extends Mock implements ApiClient {}
+
+class MockCacheService extends Mock implements CacheService {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -15,10 +18,12 @@ void main() {
   group('CategoriesRepository Tests with data: ', () {
     late CategoriesRepository repository;
     late MockApiClient mockApi;
+    late MockCacheService mockCacheService;
     late String mockApiData;
 
     setUp(() {
       mockApi = MockApiClient();
+      mockCacheService = MockCacheService();
       mockApiData = '''
         {
           "data" : [
@@ -43,17 +48,26 @@ void main() {
           ]
         }
         ''';
-      repository = CategoriesRepository(mockApi);
+      repository = CategoriesRepository(
+        apiClient: mockApi,
+        cacheService: mockCacheService,
+      );
     });
 
-    tearDown(() {
-      repository.clearCache();
-    });
+    tearDown(() {});
 
     test('loadCategories should return list of CategorySection', () async {
       when(() => mockApi.get('categories')).thenAnswer((_) async {
         return jsonDecode(mockApiData) as Map<String, dynamic>;
       });
+      when(
+        () => mockCacheService.write<List<CategorySection>>(
+          key: any(named: 'key'),
+          value: any(named: 'value'),
+          ttlHrs: any(named: 'ttlHrs'),
+          encode: any(named: 'encode'),
+        ),
+      ).thenAnswer((_) async {});
 
       final categories = await repository.loadCategories();
 

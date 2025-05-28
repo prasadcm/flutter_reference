@@ -8,17 +8,18 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: _appBar(),
-        body: ScrollingSearchSuggestion(
-          onTap: () => context.push('/search'),
-        ));
+      appBar: _appBar(),
+      body: ScrollingSearchSuggestion(
+        onTap: () => context.push('/search'),
+      ),
+    );
   }
 
   PreferredSizeWidget _appBar() {
     return AppBar(
-      title: Center(
+      title: const Center(
         child: Text(
-          "Home",
+          'Home',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontWeight: FontWeight.bold,

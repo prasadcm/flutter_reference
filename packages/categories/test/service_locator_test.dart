@@ -1,4 +1,5 @@
 import 'package:categories/categories.dart';
+import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mocktail/mocktail.dart';
@@ -11,16 +12,21 @@ class MockCategoriesRepository extends Mock implements CategoriesRepository {}
 
 class MockCategoriesBloc extends Mock implements CategoriesBloc {}
 
+class MockCacheService extends Mock implements CacheService {}
+
 void main() {
   group('Service Locator Tests', () {
     late GetIt testLocator;
     late MockApiClient mockApiClient;
+    late MockCacheService mockCacheService;
 
     setUp(() {
       testLocator = GetIt.instance;
       mockApiClient = MockApiClient();
+      mockCacheService = MockCacheService();
 
       GetIt.I.registerSingleton<ApiClient>(mockApiClient);
+      GetIt.I.registerSingleton<CacheService>(mockCacheService);
     });
 
     tearDown(() {

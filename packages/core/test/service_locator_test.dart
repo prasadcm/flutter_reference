@@ -1,13 +1,18 @@
 import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
+import 'package:mocktail/mocktail.dart';
+
+class MockCacheService extends Mock implements CacheService {}
 
 void main() {
   group('Service Locator Tests', () {
     late GetIt testLocator;
+    late MockCacheService mockCacheService;
 
     setUp(() {
       testLocator = GetIt.instance;
+      mockCacheService = MockCacheService();
     });
 
     tearDown(() {
@@ -40,22 +45,27 @@ void main() {
       expect(testLocator<AppEnvironment>(), equals(staging));
     });
 
-    test('setup registers all dependencies', () {
-      CoreServiceLocator.setup();
+    test('setup registers all dependencies', () async {
+      when(() => mockCacheService.init()).thenAnswer((_) async {});
+      await CoreServiceLocator.setup(cacheOverride: mockCacheService);
 
       expect(testLocator.isRegistered<AppEnvironment>(), isTrue);
+      expect(testLocator.isRegistered<CacheService>(), isTrue);
     });
 
     test('coreLocator throws when accessing unregistered type', () {
       expect(() => coreLocator<UnregisteredType>(), throwsA(isA<Error>()));
     });
 
-    test('multiple calls to setup do not throw', () {
+    test('multiple calls to setup do not throw', () async {
+      when(() => mockCacheService.init()).thenAnswer((_) async {});
+
       // Should not throw
-      CoreServiceLocator.setup();
-      CoreServiceLocator.setup();
+      await CoreServiceLocator.setup(cacheOverride: mockCacheService);
+      await CoreServiceLocator.setup(cacheOverride: mockCacheService);
 
       expect(testLocator.isRegistered<AppEnvironment>(), isTrue);
+      expect(testLocator.isRegistered<CacheService>(), isTrue);
     });
   });
 }

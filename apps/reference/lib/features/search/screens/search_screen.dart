@@ -7,7 +7,9 @@ class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: _appBar(context), body: const Text('Search  screen'));
+      appBar: _appBar(context),
+      body: const Text('Search  screen'),
+    );
   }
 
   PreferredSizeWidget _appBar(BuildContext context) {
@@ -28,7 +30,7 @@ class SearchScreen extends StatelessWidget {
           decoration: InputDecoration(
             hintText: 'Search...',
             prefixIcon: const Icon(Icons.search),
-            contentPadding: const EdgeInsets.symmetric(vertical: 0),
+            contentPadding: EdgeInsets.zero,
             filled: true,
             fillColor: Colors.white,
             border: OutlineInputBorder(
@@ -38,8 +40,8 @@ class SearchScreen extends StatelessWidget {
           ),
         ),
       ),
-      backgroundColor: Colors.grey[200], // Optional: AppBar color
-      elevation: 0, // Optional: removes shadow
+      backgroundColor: Colors.grey[200],
+      elevation: 0,
     );
   }
 }

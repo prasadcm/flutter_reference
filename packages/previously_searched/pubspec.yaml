@@ -1,27 +1,29 @@
-name: network
-description: "A network package project."
+name: previously_searched
+description: "A new Flutter package project."
 version: 0.0.1
 homepage:
-publish_to: "none"
 
 environment:
   sdk: ^3.7.2
   flutter: ">=1.17.0"
 
 dependencies:
-  core:
-    path: ../core
-  dio: ^5.8.0+1
+  bloc: ^9.0.0
+  equatable: ^2.0.7
   flutter:
     sdk: flutter
+  flutter_bloc: ^9.1.1
   get_it: ^8.0.3
 
 dev_dependencies:
+  bloc_test: ^10.0.0
   build_runner: ^2.4.15
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
-  hive_flutter: ^1.1.0
+  json_serializable: ^6.9.5
   mocktail: ^1.0.4
   remove_from_coverage: ^2.0.0
   very_good_analysis: ^7.0.0
+
+flutter:

@@ -12,8 +12,7 @@ class _CategoriesScreenState extends State<CategoryScreen> {
   @override
   void initState() {
     super.initState();
-    final categoriesBloc = categoryLocator<CategoriesBloc>();
-    categoriesBloc.add(FetchCategories());
+    categoryLocator<CategoriesBloc>().add(FetchCategories());
   }
 
   @override
@@ -26,17 +25,17 @@ class _CategoriesScreenState extends State<CategoryScreen> {
 
   PreferredSizeWidget _appBar() {
     return AppBar(
-      title: Center(
+      title: const Center(
         child: Text(
-          "All Categories",
+          'All Categories',
           textAlign: TextAlign.center,
         ),
       ),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 15.0),
+          padding: const EdgeInsets.only(right: 15),
           child: IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () {
               // Handle search action
             },

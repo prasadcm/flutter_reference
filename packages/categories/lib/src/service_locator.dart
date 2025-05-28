@@ -1,5 +1,6 @@
 import 'package:categories/src/bloc/categories_bloc.dart';
 import 'package:categories/src/data/categories_repository.dart';
+import 'package:core/core.dart';
 import 'package:get_it/get_it.dart';
 import 'package:network/network.dart';
 
@@ -28,10 +29,14 @@ class CategoryServiceLocator {
 
   static void setup() {
     final apiClient = networkLocator<ApiClient>();
+    final cacheService = coreLocator<CacheService>();
 
     registerLazySingleton<CategoriesRepository>(
       categoryLocator,
-      () => CategoriesRepository(apiClient),
+      () => CategoriesRepository(
+        apiClient: apiClient,
+        cacheService: cacheService,
+      ),
     );
 
     registerCachedFactory(

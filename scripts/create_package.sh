@@ -18,15 +18,29 @@ cd $PACKAGE_PATH
 read -p "Do you want to include BloC? [Y/n]: " INCLUDE_BLOC
 INCLUDE_BLOC=${INCLUDE_BLOC:-Y} # default is 'Y'
 
+echo "📦 Adding dependencies..."
+flutter pub add get_it
+
+# Ensure the dependencies are added in alphabetic order to avoid analyze error
 if [[ "$INCLUDE_BLOC" =~ ^[Yy]$ ]]; then
-    echo "📦 Adding BloC dependencies..."
     flutter pub add bloc
-    flutter pub add flutter_bloc
-    flutter pub add equatable
-    flutter pub add --dev bloc_test
 fi
-flutter pub add --dev build_runner json_serializable
+
+flutter pub add equatable
+
+
+if [[ "$INCLUDE_BLOC" =~ ^[Yy]$ ]]; then
+flutter pub add flutter_bloc
+fi
+
+echo "📦 Adding dev dependencies..."
+if [[ "$INCLUDE_BLOC" =~ ^[Yy]$ ]]; then
+flutter pub add --dev bloc_test
+fi
+flutter pub add --dev build_runner
+flutter pub add --dev json_serializable
 flutter pub add --dev mocktail
+flutter pub add --dev remove_from_coverage
 flutter pub add --dev very_good_analysis
 
 # Step 4: Add standard folder structure
@@ -42,7 +56,7 @@ echo "✅ Standard folders created in $PACKAGE_NAME/lib/src"
 
 # Step 5: Add linter rules
 echo "📦 Adding linter rules ..."
-cat <<EOF > analysis_options.yaml
+cat <<EOF > ../analysis_options.yaml
 include: package:very_good_analysis/analysis_options.yaml
 
 linter:
