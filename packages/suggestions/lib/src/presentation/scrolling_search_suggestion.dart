@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:suggestions/src/data/suggestion_view_model.dart';
 import 'package:suggestions/suggestions.dart';
 
 class ScrollingSearchSuggestion extends StatefulWidget {
@@ -18,19 +19,18 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
   late AnimationController _controller;
   late Animation<Offset> _scrollCenterToUp;
   late Animation<Offset> _scrollBottomToCenter;
-  late SuggestionsBloc _suggestionsBloc;
 
   bool _flipAnimation = true;
   Timer? _timer;
   int _counter = 0;
-  List<String> _suggestions = ['items'];
+  List<SuggestionViewModel> _suggestions = [
+    const SuggestionViewModel(name: 'items'),
+  ];
   String _suggestion = 'items';
 
   @override
   void initState() {
     super.initState();
-
-    _suggestionsBloc = suggestionLocator<SuggestionsBloc>();
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 500),
@@ -56,7 +56,10 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
         curve: const Interval(0, 0.8, curve: Curves.easeInOut),
       ),
     );
-    _suggestionsBloc.add(FetchSuggestions());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<SuggestionsBloc>().add(FetchSuggestions());
+    });
   }
 
   void _startScrolling() {
@@ -65,7 +68,7 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
         _flipAnimation = !_flipAnimation;
         setState(() {
           if (_suggestions.isNotEmpty) {
-            _suggestion = _suggestions[_counter];
+            _suggestion = _suggestions[_counter].name;
           }
           _controller.reset(); // Reset for next cycle
         });
@@ -89,7 +92,6 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SuggestionsBloc, SuggestionsState>(
-      bloc: _suggestionsBloc,
       listener: (context, state) {
         if (state is SuggestionsLoaded) {
           _suggestions = state.getSuggestions;

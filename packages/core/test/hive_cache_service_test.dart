@@ -12,7 +12,7 @@ class MockHiveInterface extends Mock implements HiveInterface {}
 class MockBox<T> extends Mock implements Box<T> {}
 
 class TestEntityItem extends Equatable {
-  TestEntityItem({required this.id, required this.name});
+  const TestEntityItem({required this.id, required this.name});
 
   factory TestEntityItem.fromJson(Map<String, dynamic> json) =>
       TestEntityItem(id: json['id'] as String, name: json['name'] as String);
@@ -25,7 +25,7 @@ class TestEntityItem extends Equatable {
 }
 
 class TestEntity extends Equatable {
-  TestEntity({required this.title, required this.items});
+  const TestEntity({required this.title, required this.items});
 
   factory TestEntity.fromJson(Map<String, dynamic> json) => TestEntity(
     title: json['title'] as String,
@@ -64,23 +64,6 @@ void main() {
 
     cacheService = HiveCacheService(mockHive);
   });
-
-  // group('init', () {
-  //   test('should initialize Hive and open box', () async {
-  //     // Arrange
-  //     when(() => mockHive.initFlutter()).thenAnswer((_) async {});
-  //     when(
-  //       () => mockHive.openBox<dynamic>('mapBoxWithTtl'),
-  //     ).thenAnswer((_) async => mockBox);
-
-  //     // Act
-  //     await cacheService.init();
-
-  //     // Assert
-  //     verify(() => mockHive.initFlutter()).called(1);
-  //     verify(() => mockHive.openBox<dynamic>('mapBoxWithTtl')).called(1);
-  //   });
-  // });
 
   group('write', () {
     setUp(() {});
@@ -177,11 +160,11 @@ void main() {
     test('should write List of custom objects', () async {
       // Arrange
       final list = [
-        TestEntity(
+        const TestEntity(
           title: 'title1',
           items: [TestEntityItem(id: 'id-1', name: 'name1')],
         ),
-        TestEntity(
+        const TestEntity(
           title: 'title2',
           items: [TestEntityItem(id: 'id-2', name: 'name2')],
         ),
@@ -236,11 +219,11 @@ void main() {
 
     test('should return custom object', () {
       final list = [
-        TestEntity(
+        const TestEntity(
           title: 'title1',
           items: [TestEntityItem(id: 'id-1', name: 'name1')],
         ),
-        TestEntity(
+        const TestEntity(
           title: 'title2',
           items: [TestEntityItem(id: 'id-2', name: 'name2')],
         ),

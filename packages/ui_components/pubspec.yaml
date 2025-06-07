@@ -9,6 +9,9 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
+  cached_network_image: ^3.4.1
+  core:
+    path: ../../packages/core
   flutter:
     sdk: flutter
 
@@ -16,5 +19,12 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
+  get_it: ^8.0.3
+  mocktail: ^1.0.4
   remove_from_coverage: ^2.0.0
   very_good_analysis: ^7.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/placeholder/

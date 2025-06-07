@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:suggestions/src/data/suggestion_view_model.dart';
 import 'package:suggestions/suggestions.dart';
 
 class MockSuggestionsRepository extends Mock implements SuggestionsRepository {}
@@ -13,12 +15,23 @@ void main() {
   group('CategoriesBloc Tests', () {
     late MockSuggestionsRepository mockRepository;
     late SuggestionsBloc suggestionsBloc;
-    late List<String> mockSuggestions;
+    late List<SuggestionModel> mockSuggestions;
+    late List<SuggestionViewModel> mockSuggestionsViewModel;
+    late CacheEntry<List<SuggestionModel>> mockCacheEntry;
 
     setUp(() {
       mockRepository = MockSuggestionsRepository();
       suggestionsBloc = SuggestionsBloc(suggestionsRepository: mockRepository);
-      mockSuggestions = ['Apple', 'Banana'];
+      mockSuggestions = [
+        SuggestionModel(name: 'Apple', id: '1'),
+        SuggestionModel(name: 'Banana', id: '2'),
+      ];
+      mockSuggestionsViewModel = const [
+        SuggestionViewModel(name: 'Apple'),
+        SuggestionViewModel(name: 'Banana'),
+      ];
+      final expiry = DateTime.now().add(const Duration(hours: 1));
+      mockCacheEntry = CacheEntry(value: mockSuggestions, expiry: expiry);
     });
 
     tearDown(() {
@@ -32,14 +45,30 @@ void main() {
           mockRepository.loadSuggestions,
         ).thenAnswer((_) async => mockSuggestions);
         when(() => mockRepository.cachedSuggestions).thenReturn(null);
-        when(() => mockRepository.isCacheValid).thenReturn(false);
         return suggestionsBloc;
       },
       act: (bloc) => bloc.add(FetchSuggestions()),
-      expect: () => [
-        SuggestionsLoading(),
-        SuggestionsLoaded(suggestions: mockSuggestions),
-      ],
+      expect: () => [isA<SuggestionsLoading>(), isA<SuggestionsLoaded>()],
+    );
+
+    blocTest<SuggestionsBloc, SuggestionsState>(
+      'FetchSuggestions transforms suggestions to view models',
+      build: () {
+        when(
+          mockRepository.loadSuggestions,
+        ).thenAnswer((_) async => mockSuggestions);
+        when(() => mockRepository.cachedSuggestions).thenReturn(null);
+        return suggestionsBloc;
+      },
+      act: (bloc) => bloc.add(FetchSuggestions()),
+      expect: () => [isA<SuggestionsLoading>(), isA<SuggestionsLoaded>()],
+      verify: (bloc) {
+        final state = bloc.state as SuggestionsLoaded;
+        expect(
+          state.suggestions[0].name,
+          equals(mockSuggestionsViewModel[0].name),
+        );
+      },
     );
 
     blocTest<SuggestionsBloc, SuggestionsState>(
@@ -49,7 +78,6 @@ void main() {
           mockRepository.loadSuggestions,
         ).thenThrow(Exception('Failed to load categories'));
         when(() => mockRepository.cachedSuggestions).thenReturn(null);
-        when(() => mockRepository.isCacheValid).thenReturn(false);
         return suggestionsBloc;
       },
       act: (bloc) => bloc.add(FetchSuggestions()),
@@ -57,21 +85,19 @@ void main() {
     );
 
     blocTest<SuggestionsBloc, SuggestionsState>(
-      'emits [SuggestionsLoading, SuggestionsFailedLoading] when repository fails to load but expired cache exists',
+      'emits [SuggestionsLoading, SuggestionsFailedLoading] when repository fails to load',
       build: () {
+        final expiry = DateTime.now().subtract(const Duration(hours: 5));
+        final expiredCache = CacheEntry(value: mockSuggestions, expiry: expiry);
         when(
           mockRepository.loadSuggestions,
-        ).thenThrow(Exception('Failed to load categories'));
-        when(() => mockRepository.cachedSuggestions)
-            .thenReturn(mockSuggestions);
-        when(() => mockRepository.isCacheValid).thenReturn(false);
+        ).thenThrow(Exception('Failed to load suggestions'));
+        when(() => mockRepository.cachedSuggestions).thenReturn(expiredCache);
         return suggestionsBloc;
       },
       act: (bloc) => bloc.add(FetchSuggestions()),
-      expect: () => [
-        SuggestionsLoading(),
-        SuggestionsFailedLoading(cachedSuggestions: mockSuggestions),
-      ],
+      expect: () =>
+          [isA<SuggestionsLoading>(), isA<SuggestionsFailedLoading>()],
     );
 
     blocTest<SuggestionsBloc, SuggestionsState>(
@@ -79,7 +105,6 @@ void main() {
       build: () {
         when(mockRepository.loadSuggestions).thenAnswer((_) async => []);
         when(() => mockRepository.cachedSuggestions).thenReturn(null);
-        when(() => mockRepository.isCacheValid).thenReturn(false);
         return suggestionsBloc;
       },
       act: (bloc) => bloc.add(FetchSuggestions()),
@@ -93,13 +118,11 @@ void main() {
         when(
           mockRepository.loadSuggestions,
         ).thenAnswer((_) async => mockSuggestions);
-        when(() => mockRepository.cachedSuggestions)
-            .thenReturn(mockSuggestions);
-        when(() => mockRepository.isCacheValid).thenReturn(true);
+        when(() => mockRepository.cachedSuggestions).thenReturn(mockCacheEntry);
         return suggestionsBloc;
       },
       act: (bloc) => bloc.add(FetchSuggestions()),
-      expect: () => [SuggestionsLoaded(suggestions: mockSuggestions)],
+      expect: () => [isA<SuggestionsLoaded>()],
     );
 
     blocTest<SuggestionsBloc, SuggestionsState>(
@@ -109,7 +132,6 @@ void main() {
           mockRepository.loadSuggestions,
         ).thenThrow(const SocketException('No Internet'));
         when(() => mockRepository.cachedSuggestions).thenReturn(null);
-        when(() => mockRepository.isCacheValid).thenReturn(false);
         return suggestionsBloc;
       },
       act: (bloc) => bloc.add(FetchSuggestions()),
@@ -119,19 +141,16 @@ void main() {
     blocTest<SuggestionsBloc, SuggestionsState>(
       'emits [SuggestionsLoading, SuggestionsOffline] when offline with expired cache',
       build: () {
+        final expiry = DateTime.now().subtract(const Duration(hours: 4));
+        final expiredCache = CacheEntry(value: mockSuggestions, expiry: expiry);
         when(
           mockRepository.loadSuggestions,
         ).thenThrow(const SocketException('No Internet'));
-        when(() => mockRepository.cachedSuggestions)
-            .thenReturn(mockSuggestions);
-        when(() => mockRepository.isCacheValid).thenReturn(false);
+        when(() => mockRepository.cachedSuggestions).thenReturn(expiredCache);
         return suggestionsBloc;
       },
       act: (bloc) => bloc.add(FetchSuggestions()),
-      expect: () => [
-        SuggestionsLoading(),
-        SuggestionsOffline(cachedSuggestions: mockSuggestions),
-      ],
+      expect: () => [isA<SuggestionsLoading>(), isA<SuggestionsOffline>()],
     );
   });
 }

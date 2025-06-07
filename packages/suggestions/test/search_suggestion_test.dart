@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get_it/get_it.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:suggestions/src/data/suggestion_view_model.dart';
 import 'package:suggestions/suggestions.dart';
 
 class MockSuggestionsBloc extends Mock implements SuggestionsBloc {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  final getIt = GetIt.instance;
 
   Future<void> waitForDelay(WidgetTester tester, Duration duration) async {
     await tester.runAsync(() async {
@@ -21,13 +21,11 @@ void main() {
 
   group('ScrollingSearchSuggestion Widget Tests', () {
     late MockSuggestionsBloc mockSuggestionsBloc;
-    late List<String> mockSuggestions;
+    late List<SuggestionViewModel> mockSuggestions;
     late StreamController<SuggestionsState> stateController;
 
     setUp(() {
       mockSuggestionsBloc = MockSuggestionsBloc();
-      getIt.registerSingleton<SuggestionsBloc>(mockSuggestionsBloc);
-
       when(() => mockSuggestionsBloc.state).thenReturn(SuggestionsInitial());
       stateController = StreamController<SuggestionsState>();
       whenListen(
@@ -36,20 +34,23 @@ void main() {
         initialState: SuggestionsInitial(),
       );
       mockSuggestions = [
-        'Apple',
-        'Banana',
-        'Cherry',
+        const SuggestionViewModel(name: 'Apple'),
+        const SuggestionViewModel(name: 'Banana'),
+        const SuggestionViewModel(name: 'Cherry'),
       ];
     });
 
     tearDown(() {
-      getIt.reset();
+      stateController.close();
     });
 
     Widget createWidgetUnderTest() {
-      return const MaterialApp(
-        home: Scaffold(
-          body: ScrollingSearchSuggestion(),
+      return BlocProvider<SuggestionsBloc>.value(
+        value: mockSuggestionsBloc,
+        child: const MaterialApp(
+          home: Scaffold(
+            body: ScrollingSearchSuggestion(),
+          ),
         ),
       );
     }

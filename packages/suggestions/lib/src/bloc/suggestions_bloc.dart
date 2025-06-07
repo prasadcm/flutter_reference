@@ -3,7 +3,8 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:suggestions/src/data/suggestions_repository.dart';
+import 'package:suggestions/src/data/suggestion_view_model.dart';
+import 'package:suggestions/suggestions.dart';
 
 part 'suggestions_event.dart';
 part 'suggestions_state.dart';
@@ -20,23 +21,50 @@ class SuggestionsBloc extends Bloc<SuggestionsEvent, SuggestionsState> {
     Emitter<SuggestionsState> emit,
   ) async {
     final cache = suggestionsRepository.cachedSuggestions;
-    final isCacheValid = suggestionsRepository.isCacheValid;
-    if (cache != null && isCacheValid) {
-      emit(SuggestionsLoaded(suggestions: cache));
+    if (cache != null && cache.isExpired == false) {
+      emit(
+        SuggestionsLoaded(
+          suggestions: _transform(cache.value),
+        ),
+      );
       return;
     }
     emit(SuggestionsLoading());
     try {
       final suggestionsList = await suggestionsRepository.loadSuggestions();
-      emit(SuggestionsLoaded(suggestions: suggestionsList));
+      emit(
+        SuggestionsLoaded(
+          suggestions: _transform(suggestionsList),
+        ),
+      );
     } on SocketException {
       if (cache != null) {
-        emit(SuggestionsOffline(cachedSuggestions: cache));
+        emit(
+          SuggestionsOffline(
+            cachedSuggestions: _transform(cache.value),
+          ),
+        );
       } else {
         emit(const SuggestionsOffline());
       }
     } on Exception {
-      emit(SuggestionsFailedLoading(cachedSuggestions: cache));
+      emit(
+        SuggestionsFailedLoading(
+          cachedSuggestions: _transform(cache?.value ?? []),
+        ),
+      );
     }
+  }
+
+  List<SuggestionViewModel> _transform(
+    List<SuggestionModel> suggestionList,
+  ) {
+    return suggestionList
+        .map(
+          (item) => SuggestionViewModel(
+            name: item.name,
+          ),
+        )
+        .toList();
   }
 }

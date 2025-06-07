@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:previously_searched/previously_searched.dart';
+import 'package:suggestions/suggestions.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
@@ -8,7 +10,7 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(context),
-      body: const Text('Search  screen'),
+      body: const PreviouslySearchedView(),
     );
   }
 
@@ -24,21 +26,8 @@ class SearchScreen extends StatelessWidget {
           }
         },
       ),
-      title: SizedBox(
-        height: 40,
-        child: TextField(
-          decoration: InputDecoration(
-            hintText: 'Search...',
-            prefixIcon: const Icon(Icons.search),
-            contentPadding: EdgeInsets.zero,
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide.none,
-            ),
-          ),
-        ),
+      title: ScrollingSearchSuggestion(
+        onTap: () => {},
       ),
       backgroundColor: Colors.grey[200],
       elevation: 0,

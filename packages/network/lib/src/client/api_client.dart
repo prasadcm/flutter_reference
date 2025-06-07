@@ -1,3 +1,6 @@
+// TODO(me): Remove the print statements finally.
+// ignore_for_file: avoid_print
+
 import 'package:dio/dio.dart';
 import 'package:network/src/client/api_exception.dart';
 
@@ -15,8 +18,11 @@ class ApiClient {
         path,
         queryParameters: queryParams,
       );
+
       return _processResponse(response);
     } on DioException catch (e) {
+      print('DioException: ${e.message}');
+
       throw _handleDioError(e);
     }
   }
@@ -28,6 +34,7 @@ class ApiClient {
         response.statusCode! >= 200 &&
         response.statusCode! < 300 &&
         response.data != null) {
+      print('Response: ${response.data!}');
       return response.data!;
     } else {
       throw ApiException('Invalid status code: ${response.statusCode}');

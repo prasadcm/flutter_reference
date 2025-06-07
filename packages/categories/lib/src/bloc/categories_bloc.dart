@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:categories/src/data/categories_repository.dart';
+import 'package:categories/src/data/category_item_view_model.dart';
 import 'package:categories/src/data/category_section.dart';
+import 'package:categories/src/data/category_section_view_model.dart';
 import 'package:equatable/equatable.dart';
 
 part 'categories_event.dart';
@@ -22,21 +24,47 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
   ) async {
     final cache = categoriesRepository.cachedCategories;
     if (cache != null && cache.isExpired == false) {
-      emit(CategoriesLoaded(categories: cache.value));
+      emit(CategoriesLoaded(categories: _transform(cache.value)));
       return;
     }
     emit(CategoriesLoading());
     try {
       final categoriesList = await categoriesRepository.loadCategories();
-      emit(CategoriesLoaded(categories: categoriesList));
+      emit(CategoriesLoaded(categories: _transform(categoriesList)));
     } on SocketException {
       if (cache != null) {
-        emit(CategoriesOffline(cachedCategories: cache.value));
+        emit(CategoriesOffline(cachedCategories: _transform(cache.value)));
       } else {
         emit(const CategoriesOffline());
       }
     } on Exception {
-      emit(CategoriesFailedLoading(cachedCategories: cache?.value));
+      emit(
+        CategoriesFailedLoading(
+          cachedCategories: _transform(cache?.value ?? []),
+        ),
+      );
     }
+  }
+
+  List<CategorySectionViewModel> _transform(List<CategorySection> categories) {
+    return categories
+        .map(
+          (section) => CategorySectionViewModel(
+            title: section.title,
+            items:
+                section.items
+                    .map(
+                      (item) => CategoryItemViewModel(
+                        id: item.id,
+                        name: item.name,
+                        imageUrl: item.imageUrl,
+                        sequence: item.sequence,
+                      ),
+                    )
+                    .toList(),
+            sequence: section.sequence,
+          ),
+        )
+        .toList();
   }
 }

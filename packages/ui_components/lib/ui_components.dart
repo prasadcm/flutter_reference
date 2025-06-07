@@ -1,4 +1,6 @@
 export 'src/presentation/app_theme.dart';
+export 'src/presentation/cached_icon_view.dart';
+export 'src/presentation/cached_image_view.dart';
 export 'src/presentation/error_view.dart';
 export 'src/presentation/initial_view.dart';
 export 'src/presentation/loading_view.dart';

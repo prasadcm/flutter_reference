@@ -1,6 +1,5 @@
 name: reference
 description: "A new Flutter project."
-
 publish_to: "none"
 
 version: 1.0.0
@@ -21,6 +20,8 @@ dependencies:
   go_router: ^14.8.0
   network:
     path: ../../packages/network
+  previously_searched:
+    path: ../../packages/previously_searched
   suggestions:
     path: ../../packages/suggestions
   ui_components:

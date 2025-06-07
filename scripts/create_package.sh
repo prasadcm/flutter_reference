@@ -14,34 +14,44 @@ PACKAGE_PATH="packages/$PACKAGE_NAME"
 flutter create --template=package $PACKAGE_PATH
 cd $PACKAGE_PATH
 
+# Insert publish_to: "none" after the description line in pubspec.yaml
+sed -i '' '/^description:/a\
+publish_to: "none"\
+' pubspec.yaml
+
+# Remove all comment lines
+sed -i '' '/^[[:space:]]*#/d' pubspec.yaml
+
 # Step 3: Ask whether to include BloC
 read -p "Do you want to include BloC? [Y/n]: " INCLUDE_BLOC
 INCLUDE_BLOC=${INCLUDE_BLOC:-Y} # default is 'Y'
 
 echo "📦 Adding dependencies..."
-flutter pub add get_it
+
+# Add local packages - core, network
+awk '/^dependencies:/ {
+    print;
+    print "  core:";
+    print "    path: ../../packages/core";
+    print "  network:";
+    print "    path: ../../packages/network";
+    next
+} 1' pubspec.yaml > pubspec.new.yaml && mv pubspec.new.yaml pubspec.yaml
+
+# Add common dependencies
+flutter pub add dartz
+flutter pub add equatable get_it json_annotation
 
 # Ensure the dependencies are added in alphabetic order to avoid analyze error
 if [[ "$INCLUDE_BLOC" =~ ^[Yy]$ ]]; then
-    flutter pub add bloc
-fi
-
-flutter pub add equatable
-
-
-if [[ "$INCLUDE_BLOC" =~ ^[Yy]$ ]]; then
-flutter pub add flutter_bloc
+    flutter pub add bloc flutter_bloc
 fi
 
 echo "📦 Adding dev dependencies..."
+flutter pub add --dev build_runner json_serializable mocktail remove_from_coverage very_good_analysis
 if [[ "$INCLUDE_BLOC" =~ ^[Yy]$ ]]; then
 flutter pub add --dev bloc_test
 fi
-flutter pub add --dev build_runner
-flutter pub add --dev json_serializable
-flutter pub add --dev mocktail
-flutter pub add --dev remove_from_coverage
-flutter pub add --dev very_good_analysis
 
 # Step 4: Add standard folder structure
 echo "📦 Adding standard folder structure..."
@@ -76,6 +86,12 @@ analyzer:
     - test/**/mocks/*.dart
 EOF
 
+# Add coverage exclusion config file
+touch coverage_exclude.conf
+
 echo "✅ Linter rules added to $PACKAGE_NAME/analysis_options.yaml"
 
 echo "✅ Package $PACKAGE_NAME created and set up!"
+
+echo "📦 Please visit the pubspec.yaml file and rearrange the dependencies in the alphabatic order."
+

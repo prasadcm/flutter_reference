@@ -2,6 +2,8 @@
 
 LOG_FILE=".test_output.log"
 COVERAGE_THRESHOLD=80
+COVERAGE_FILE="coverage/lcov.info"
+EXCLUDE_FILE="coverage_exclude.conf"
 
 PACKAGE_PATH=$1
 
@@ -35,15 +37,28 @@ if [ ! -f coverage/lcov.info ]; then
 fi
 
 # Remove the generated files from coverage
+REGEX_ARGS=()
+while IFS= read -r line || [[ -n "$line" ]]; do
+  # Ignore empty lines and comments
+  [[ -z "$line" || "$line" =~ ^# ]] && continue
+  REGEX_ARGS+=("-r" "$line")
+done < "$EXCLUDE_FILE"
+
+echo "${REGEX_ARGS[@]}";
+
 dart run remove_from_coverage:remove_from_coverage \
-  -f coverage/lcov.info \
-  -r '\.g\.dart$'
+  -f "$COVERAGE_FILE" \
+  -r '\.g\.dart$' \
+  "${REGEX_ARGS[@]}"
+
 
 # Extract coverage percentage
-COVERAGE=$(lcov --summary coverage/lcov.info | grep "lines.......:" | awk '{print $2}' | sed 's/%//')
+COVERAGE=$(lcov --summary "$COVERAGE_FILE" | grep "lines.......:" | awk '{print $2}' | sed 's/%//')
 
 if awk "BEGIN {exit !($COVERAGE < 80)}"; then
-    echo "❌ Test coverage is below 80%. Current coverage is $COVERAGE%. Failing the check."
+    echo "❌ Test coverage is below 80%. Current coverage is $COVERAGE%. Failing the check. Opening coverage report in browser."
+    genhtml "$COVERAGE_FILE" -o coverage/html
+    open coverage/html/index.html
     exit 1
 else
     echo "✅ Test coverage meets the requirement. Expected: 80%. Actual: $COVERAGE%"

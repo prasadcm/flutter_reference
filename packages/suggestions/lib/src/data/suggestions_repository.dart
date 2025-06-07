@@ -1,44 +1,74 @@
+import 'package:core/core.dart';
 import 'package:network/network.dart';
 import 'package:suggestions/src/data/suggestion_model.dart';
+import 'package:suggestions/src/data/suggestion_response.dart';
 
 class SuggestionsRepository {
-  SuggestionsRepository(this._apiClient);
-  final ApiClient _apiClient;
-  List<String>? _cachedSuggestions;
-  DateTime? _cacheTimestamp;
-  Duration cacheValidity = const Duration(hours: 2);
+  SuggestionsRepository({required this.apiClient, required this.cacheService});
+  final ApiClient apiClient;
+  final CacheService cacheService;
 
-  Future<List<String>> loadSuggestions() async {
+  CacheEntry<List<SuggestionModel>>? _cacheEntry;
+
+  Future<List<SuggestionModel>> loadSuggestions() async {
     try {
-      final response = await _apiClient.get(ApiEndpoints.suggestions);
+      final response = await apiClient.get(ApiEndpoints.suggestions);
       final jsonList = response['data'] as List<dynamic>;
-      final suggestions = jsonList
+      final suggestionsResponse = jsonList
           .map(
-            (json) => SuggestionModel.fromJson(json as Map<String, dynamic>),
+            (json) => SuggestionResponse.fromJson(json as Map<String, dynamic>),
           )
           .toList();
-      _cachedSuggestions = suggestions.map((e) => e.name).toList();
-      return _cachedSuggestions!;
+      final suggestions = _transform(suggestionsResponse);
+      await saveToCache(suggestions);
+      return suggestions;
     } catch (e) {
       throw Exception('Failed to fetch suggestions: $e');
     }
   }
 
-  // ignore: unnecessary_getters_setters
-  List<String>? get cachedSuggestions => _cachedSuggestions;
-
-  set cachedSuggestions(List<String>? categories) {
-    _cachedSuggestions = categories;
-    _cacheTimestamp = DateTime.now();
+  Future<void> saveToCache(List<SuggestionModel>? suggestions) async {
+    if (suggestions != null) {
+      await cacheService.write<List<SuggestionModel>>(
+        key: 'Suggestions',
+        value: suggestions,
+        ttlHrs: 24 * 8, // 8 days
+        encode: (sections) =>
+            sections.map((section) => section.toJson()).toList(),
+      );
+      _cacheEntry = null;
+    }
   }
 
-  bool get isCacheValid {
-    if (_cachedSuggestions == null || _cacheTimestamp == null) return false;
-    return DateTime.now().difference(_cacheTimestamp!) < cacheValidity;
+  CacheEntry<List<SuggestionModel>>? get cachedSuggestions {
+    if (_cacheEntry == null || _cacheEntry!.isExpired == true) {
+      _cacheEntry = cacheService.read<List<SuggestionModel>>(
+        key: 'Suggestions',
+        decode: (raw) => (raw as List)
+            .map(
+              (item) => SuggestionModel.fromJson(
+                (item as Map).map((k, v) => MapEntry(k.toString(), v)),
+              ),
+            )
+            .toList(),
+      );
+    }
+    return _cacheEntry;
+  }
+
+  List<SuggestionModel> _transform(List<SuggestionResponse> searchList) {
+    return searchList
+        .map(
+          (item) => SuggestionModel(
+            name: item.name,
+            id: item.id,
+          ),
+        )
+        .toList();
   }
 
   void clearCache() {
-    _cachedSuggestions = null;
-    _cacheTimestamp = null;
+    cacheService.delete('Suggestions');
+    _cacheEntry = null;
   }
 }

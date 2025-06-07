@@ -8,8 +8,8 @@ part of 'suggestion_model.dart';
 
 SuggestionModel _$SuggestionModelFromJson(Map<String, dynamic> json) =>
     SuggestionModel(
-      json['id'] as String,
-      json['name'] as String,
+      id: json['id'] as String,
+      name: json['name'] as String,
     );
 
 Map<String, dynamic> _$SuggestionModelToJson(SuggestionModel instance) =>

@@ -17,14 +17,14 @@ class CategoryServiceLocator {
     locator.registerLazySingleton<T>(factoryFunc);
   }
 
-  static void registerCachedFactory<T extends Object>(
+  static void registerFactory<T extends Object>(
     GetIt locator,
     T Function() factoryFunc,
   ) {
     if (locator.isRegistered<T>()) {
       locator.unregister<T>();
     }
-    locator.registerCachedFactory<T>(factoryFunc);
+    locator.registerFactory<T>(factoryFunc);
   }
 
   static void setup() {
@@ -39,7 +39,7 @@ class CategoryServiceLocator {
       ),
     );
 
-    registerCachedFactory(
+    registerFactory(
       categoryLocator,
       () => CategoriesBloc(
         categoriesRepository: categoryLocator<CategoriesRepository>(),

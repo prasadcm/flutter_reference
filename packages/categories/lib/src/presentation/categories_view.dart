@@ -1,5 +1,5 @@
 import 'package:categories/categories.dart';
-import 'package:categories/src/data/category_section.dart';
+import 'package:categories/src/data/category_section_view_model.dart';
 import 'package:categories/src/presentation/category_section_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,10 +10,11 @@ class CategoryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = categoryLocator<CategoriesBloc>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<CategoriesBloc>().add(FetchCategories());
+    });
 
     return BlocConsumer<CategoriesBloc, CategoriesState>(
-      bloc: bloc,
       listener: (context, state) {
         if (state is CategoriesFailedLoading) {
           ToastMessage.show(context, 'Something went wrong. Try again!');
@@ -52,7 +53,7 @@ class CategoryView extends StatelessWidget {
     );
   }
 
-  Widget _buildCategories(List<CategorySection> sections) {
+  Widget _buildCategories(List<CategorySectionViewModel> sections) {
     return ListView.builder(
       itemCount: sections.length,
       itemBuilder: (context, sectionIndex) {

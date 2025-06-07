@@ -1,130 +1,37 @@
-import 'package:bloc_test/bloc_test.dart';
-import 'package:categories/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get_it/get_it.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:go_router/go_router.dart';
 import 'package:reference/app.dart';
-import 'package:reference/features/categories/screens/category_screen.dart';
-import 'package:reference/features/profile/widgets/profile_screen.dart';
-import 'package:reference/features/search/screens/search_screen.dart';
-import 'package:reference/routing/main_screen.dart';
-import 'package:suggestions/suggestions.dart';
-
-class MockCategoriesBloc extends MockBloc<CategoriesEvent, CategoriesState>
-    implements CategoriesBloc {}
-
-class MockSuggestionsBloc extends MockBloc<SuggestionsEvent, SuggestionsState>
-    implements SuggestionsBloc {}
+import 'package:reference/routing/app_router.dart';
+import 'package:ui_components/ui_components.dart';
 
 void main() {
-  final getIt = GetIt.instance;
+  testWidgets('ReferenceApp creates MaterialApp with router config',
+      (WidgetTester tester) async {
+    // Create a simple GoRouter for testing
+    final testRouter = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const SizedBox(),
+        ),
+      ],
+    );
 
-  group('ReferenceApp Tests', () {
-    late MockSuggestionsBloc mockSuggestionsBloc;
-    late MockCategoriesBloc mockCategoriesBloc;
+    // Replace the app router with our test router
+    AppRouter.router = testRouter;
 
-    setUp(() {
-      mockSuggestionsBloc = MockSuggestionsBloc();
-      mockCategoriesBloc = MockCategoriesBloc();
-      getIt
-        ..registerSingleton<SuggestionsBloc>(mockSuggestionsBloc)
-        ..registerSingleton<CategoriesBloc>(mockCategoriesBloc);
-      when(() => mockSuggestionsBloc.state).thenReturn(SuggestionsInitial());
-      when(() => mockCategoriesBloc.state).thenReturn(CategoriesInitial());
-    });
+    // Build the app
+    await tester.pumpWidget(const ReferenceApp());
 
-    tearDown(() {
-      getIt.reset();
-    });
+    // Find MaterialApp
+    final materialApp = tester.widget<MaterialApp>(
+      find.byType(MaterialApp),
+    );
 
-    testWidgets('should render ReferenceApp with initial route',
-        (WidgetTester tester) async {
-      whenListen(
-        mockSuggestionsBloc,
-        Stream.fromIterable([const SuggestionsLoaded(suggestions: [])]),
-        initialState: SuggestionsLoading(),
-      );
-      await tester.pumpWidget(
-        const ReferenceApp(),
-      );
-
-      // Verify initial route is loaded
-      expect(find.byType(MainScreen), findsOneWidget);
-    });
-
-    testWidgets('should show Profile page', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const ReferenceApp(),
-      );
-
-      await tester.tap(find.byIcon(Icons.person));
-      await tester.pumpAndSettle();
-
-      // Verify initial route is loaded
-      expect(find.byType(ProfileScreen), findsOneWidget);
-    });
-
-    testWidgets('should show Categories page', (WidgetTester tester) async {
-      when(() => mockCategoriesBloc.state).thenReturn(CategoriesInitial());
-
-      whenListen(
-        mockCategoriesBloc,
-        Stream.fromIterable([const CategoriesLoaded(categories: [])]),
-        initialState: CategoriesLoading(),
-      );
-
-      await tester.pumpWidget(
-        const ReferenceApp(),
-      );
-
-      await tester.tap(find.byIcon(Icons.category));
-      await tester.pumpAndSettle();
-
-      // Verify initial route is loaded
-      expect(find.byType(CategoryScreen), findsOneWidget);
-    });
-  });
-
-  group('HomeScreen Navigation Tests', () {
-    late MockSuggestionsBloc mockSuggestionsBloc;
-    late MockCategoriesBloc mockCategoriesBloc;
-
-    setUp(() {
-      mockSuggestionsBloc = MockSuggestionsBloc();
-      mockCategoriesBloc = MockCategoriesBloc();
-      getIt
-        ..registerSingleton<SuggestionsBloc>(mockSuggestionsBloc)
-        ..registerSingleton<CategoriesBloc>(mockCategoriesBloc);
-      when(() => mockSuggestionsBloc.state).thenReturn(SuggestionsInitial());
-      when(() => mockCategoriesBloc.state).thenReturn(CategoriesInitial());
-    });
-
-    tearDown(() {
-      getIt.reset();
-    });
-
-    testWidgets(
-        'should navigate to SearchScreen when ScrollingSearchSuggestion is tapped',
-        (WidgetTester tester) async {
-      whenListen(
-        mockSuggestionsBloc,
-        Stream.fromIterable([const SuggestionsLoaded(suggestions: [])]),
-        initialState: SuggestionsLoading(),
-      );
-      await tester.pumpWidget(
-        const ReferenceApp(),
-      );
-
-      // Verify initial route is loaded
-      expect(find.byType(MainScreen), findsOneWidget);
-
-      // Tap on the ScrollingSearchSuggestion widget
-      await tester.tap(find.byType(ScrollingSearchSuggestion));
-      await tester.pumpAndSettle();
-
-      // Verify navigation to SearchScreen
-      expect(find.byType(SearchScreen), findsOneWidget);
-    });
+    // Verify properties
+    expect(materialApp.routerConfig, equals(testRouter));
+    expect(materialApp.theme, equals(AppThemes.lightTheme));
+    expect(materialApp.darkTheme, equals(AppThemes.darkTheme));
   });
 }

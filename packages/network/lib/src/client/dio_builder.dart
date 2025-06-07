@@ -7,7 +7,7 @@ class DioBuilder {
   DioBuilder._({required this.env})
     : dio = Dio(
         BaseOptions(
-          baseUrl: env.baseUrl,
+          baseUrl: '${env.baseUrl}/api/',
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
           headers: {'Content-Type': 'application/json'},

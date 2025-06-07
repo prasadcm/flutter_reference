@@ -1,10 +1,10 @@
-import 'package:categories/src/data/category_section.dart';
+import 'package:categories/src/data/category_section_view_model.dart';
 import 'package:categories/src/presentation/category_item_widget.dart';
 import 'package:flutter/material.dart';
 
 class CategorySectionWidget extends StatelessWidget {
   const CategorySectionWidget({required this.section, super.key});
-  final CategorySection section;
+  final CategorySectionViewModel section;
 
   @override
   Widget build(BuildContext context) {

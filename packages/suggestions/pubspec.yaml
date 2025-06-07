@@ -12,6 +12,8 @@ flutter:
 
 dependencies:
   bloc: ^9.0.0
+  core:
+    path: ../../packages/core
   equatable: ^2.0.7
   flutter:
     sdk: flutter

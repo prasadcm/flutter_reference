@@ -1,6 +1,7 @@
 name: previously_searched
 description: "A new Flutter package project."
 version: 0.0.1
+publish_to: "none"
 homepage:
 
 environment:
@@ -9,11 +10,18 @@ environment:
 
 dependencies:
   bloc: ^9.0.0
+  core:
+    path: ../../packages/core
   equatable: ^2.0.7
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
   get_it: ^8.0.3
+  json_annotation: ^4.9.0
+  network:
+    path: ../../packages/network
+  ui_components:
+    path: ../../packages/ui_components
 
 dev_dependencies:
   bloc_test: ^10.0.0
@@ -27,3 +35,4 @@ dev_dependencies:
   very_good_analysis: ^7.0.0
 
 flutter:
+  uses-material-design: true

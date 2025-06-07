@@ -1,35 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:reference/features/categories/screens/category_screen.dart';
-import 'package:reference/features/home/screens/home_screen.dart';
-import 'package:reference/features/profile/widgets/profile_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ui_components/ui_components.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+class MainScreen extends StatelessWidget {
+  const MainScreen({required this.child, super.key});
 
-  @override
-  State<MainScreen> createState() => _MainScreenState();
-}
+  final Widget child;
 
-class _MainScreenState extends State<MainScreen> {
-  int currentPageIndex = 0;
+  static final List<String> _tabs = ['/home', '/category', '/profile'];
+
+  int _locationToTabIndex(String location) {
+    return _tabs.indexWhere((path) => location.startsWith(path));
+  }
 
   @override
   Widget build(BuildContext context) {
+    final currentLocation = GoRouterState.of(context).uri.toString();
+    final currentIndex = _locationToTabIndex(currentLocation);
+
     return Scaffold(
       bottomNavigationBar: TabbarWidget(
-        selectedTabIndex: currentPageIndex,
+        selectedTabIndex: currentIndex,
         onTabSelected: (index) {
-          setState(() {
-            currentPageIndex = index;
-          });
+          if (index != currentIndex) {
+            context.go(_tabs[index]);
+          }
         },
       ),
-      body: [
-        const HomeScreen(),
-        const CategoryScreen(),
-        const ProfileScreen(),
-      ][currentPageIndex],
+      body: SafeArea(child: child),
     );
   }
 }

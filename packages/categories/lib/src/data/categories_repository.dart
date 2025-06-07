@@ -1,5 +1,5 @@
 import 'package:categories/src/data/category_item.dart';
-import 'package:categories/src/data/category_model.dart';
+import 'package:categories/src/data/category_response.dart';
 import 'package:categories/src/data/category_section.dart';
 import 'package:core/core.dart';
 import 'package:network/network.dart';
@@ -17,10 +17,11 @@ class CategoriesRepository {
       final categories =
           jsonList
               .map(
-                (json) => CategoryModel.fromJson(json as Map<String, dynamic>),
+                (json) =>
+                    CategoryResponse.fromJson(json as Map<String, dynamic>),
               )
               .toList();
-      final categorySections = _transformToCategorySections(categories);
+      final categorySections = _transform(categories);
       await saveToCache(categorySections);
       return categorySections;
     } catch (e) {
@@ -64,10 +65,8 @@ class CategoriesRepository {
     _cacheEntry = null;
   }
 
-  List<CategorySection> _transformToCategorySections(
-    List<CategoryModel> categories,
-  ) {
-    final groupedCategories = <String, List<CategoryModel>>{};
+  List<CategorySection> _transform(List<CategoryResponse> categories) {
+    final groupedCategories = <String, List<CategoryResponse>>{};
 
     // Group items by category name
     for (final category in categories) {

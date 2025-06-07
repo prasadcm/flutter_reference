@@ -1,19 +1,8 @@
 import 'package:categories/categories.dart';
 import 'package:flutter/material.dart';
 
-class CategoryScreen extends StatefulWidget {
+class CategoryScreen extends StatelessWidget {
   const CategoryScreen({super.key});
-
-  @override
-  State<CategoryScreen> createState() => _CategoriesScreenState();
-}
-
-class _CategoriesScreenState extends State<CategoryScreen> {
-  @override
-  void initState() {
-    super.initState();
-    categoryLocator<CategoriesBloc>().add(FetchCategories());
-  }
 
   @override
   Widget build(BuildContext context) {
