@@ -1,5 +1,6 @@
 #!/bin/bash
 set -euo pipefail
+trap 'echo "❌ Script failed at line $LINENO with exit code $?"' ERR
 
 LOG_FILE=".test_output.log"
 COVERAGE_THRESHOLD=80
