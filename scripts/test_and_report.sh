@@ -1,7 +1,7 @@
 #!/bin/bash
-set -eo pipefail
+set -euo pipefail
 trap 'echo "❌ Script failed at line $LINENO with exit code $?"' ERR
-set -x
+
 
 LOG_FILE=".test_output.log"
 COVERAGE_THRESHOLD=80
@@ -35,7 +35,7 @@ if [ $TEST_EXIT_CODE -ne 0 ]; then
 fi
 
 # Check if coverage file exists
-if [ ! -f coverage/lcov.info ]; then
+if [ ! -f $COVERAGE_FILE ]; then
   echo "❌ No coverage file found in $PACKAGE_PATH"
   exit 1
 fi
@@ -44,11 +44,14 @@ fi
 REGEX_ARGS=(
   -r '\.g\.dart$'
 )
-while IFS= read -r line || [[ -n "$line" ]]; do
-  # Ignore empty lines and comments
-  [[ -z "$line" || "$line" =~ ^# ]] && continue
-  REGEX_ARGS+=("-r" "$line")
-done < "$EXCLUDE_FILE"
+
+if [[  -f "$EXCLUDE_FILE" ]]; then
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    # Ignore empty lines and comments
+    [[ -z "$line" || "$line" =~ ^# ]] && continue
+    REGEX_ARGS+=("-r" "$line")
+  done < "$EXCLUDE_FILE"
+fi
 
 dart run remove_from_coverage:remove_from_coverage \
   -f "$COVERAGE_FILE" \
@@ -56,15 +59,39 @@ dart run remove_from_coverage:remove_from_coverage \
 
 
 # Extract coverage percentage
-COVERAGE=$(lcov --summary "$COVERAGE_FILE" | grep "lines.......:" | awk '{print $2}' | sed 's/%//')
+# COVERAGE=$(lcov --summary "$COVERAGE_FILE" | grep "lines.......:" | awk '{print $2}' | sed 's/%//')
 
-if awk -v cov="$COVERAGE" 'BEGIN {exit !(cov < 80)}'; then
-    echo "❌ Test coverage is below 80%. Current coverage is $COVERAGE%. Failing the check. Opening coverage report in browser."
-    genhtml "$COVERAGE_FILE" -o coverage/html
-    open coverage/html/index.html
-    exit 1
+SUMMARY_OUTPUT=$(lcov --summary "$COVERAGE_FILE" 2>&1) || {
+  echo "❌ lcov summary failed:"
+  echo "$SUMMARY_OUTPUT"
+  exit 1
+}
+
+LINE_COVERAGE_LINE=$(echo "$SUMMARY_OUTPUT" | grep "lines.......:" || true)
+if [[ -z "$LINE_COVERAGE_LINE" ]]; then
+  echo "❌ Could not find line coverage info in lcov summary output:"
+  echo "$SUMMARY_OUTPUT"
+  exit 1
+fi
+
+COVERAGE=$(echo "$LINE_COVERAGE_LINE" | awk '{print $2}' | sed 's/%//')
+
+# if awk -v cov="$COVERAGE" 'BEGIN {exit !(cov < 80)}'; then
+#     echo "❌ Test coverage is below 80%. Current coverage is $COVERAGE%. Failing the check. Opening coverage report in browser."
+#     genhtml "$COVERAGE_FILE" -o coverage/html
+#     open coverage/html/index.html
+#     exit 1
+# else
+#     echo "✅ Test coverage meets the requirement. Expected: 80%. Actual: $COVERAGE%"
+# fi
+
+if awk -v cov="$COVERAGE" -v threshold="$COVERAGE_THRESHOLD" 'BEGIN {exit !(cov >= threshold)}'; then
+  echo "✅ Test coverage meets the requirement. Expected: $COVERAGE_THRESHOLD%. Actual: $COVERAGE%"
 else
-    echo "✅ Test coverage meets the requirement. Expected: 80%. Actual: $COVERAGE%"
+  echo "❌ Test coverage is below $COVERAGE_THRESHOLD%. Current coverage is $COVERAGE%. Failing the check. Opening coverage report in browser."
+  genhtml "$COVERAGE_FILE" -o coverage/html
+  open coverage/html/index.html
+  exit 1
 fi
 
 exit 0
