@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 LOG_FILE=".test_output.log"
 COVERAGE_THRESHOLD=80
@@ -38,25 +39,24 @@ if [ ! -f coverage/lcov.info ]; then
 fi
 
 # Remove the generated files from coverage
-REGEX_ARGS=()
+REGEX_ARGS=(
+  -r '\.g\.dart$'
+)
 while IFS= read -r line || [[ -n "$line" ]]; do
   # Ignore empty lines and comments
   [[ -z "$line" || "$line" =~ ^# ]] && continue
   REGEX_ARGS+=("-r" "$line")
 done < "$EXCLUDE_FILE"
 
-echo "${REGEX_ARGS[@]}";
-
 dart run remove_from_coverage:remove_from_coverage \
   -f "$COVERAGE_FILE" \
-  -r '\.g\.dart$' \
   "${REGEX_ARGS[@]}"
 
 
 # Extract coverage percentage
 COVERAGE=$(lcov --summary "$COVERAGE_FILE" | grep "lines.......:" | awk '{print $2}' | sed 's/%//')
 
-if awk "BEGIN {exit !($COVERAGE < 80)}"; then
+if awk -v cov="$COVERAGE" 'BEGIN {exit !(cov < 80)}'; then
     echo "❌ Test coverage is below 80%. Current coverage is $COVERAGE%. Failing the check. Opening coverage report in browser."
     genhtml "$COVERAGE_FILE" -o coverage/html
     open coverage/html/index.html
