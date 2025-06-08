@@ -59,15 +59,13 @@ dart run remove_from_coverage:remove_from_coverage \
 
 
 # Extract coverage percentage
-# COVERAGE=$(lcov --summary "$COVERAGE_FILE" | grep "lines.......:" | awk '{print $2}' | sed 's/%//')
-
 SUMMARY_OUTPUT=$(lcov --summary "$COVERAGE_FILE" 2>&1) || {
   echo "❌ lcov summary failed:"
   echo "$SUMMARY_OUTPUT"
   exit 1
 }
 
-LINE_COVERAGE_LINE=$(echo "$SUMMARY_OUTPUT" | grep "lines.......:" || true)
+LINE_COVERAGE_LINE=$(echo "$SUMMARY_OUTPUT" | grep -E '^\s*lines.*:' || true)
 if [[ -z "$LINE_COVERAGE_LINE" ]]; then
   echo "❌ Could not find line coverage info in lcov summary output:"
   echo "$SUMMARY_OUTPUT"
@@ -75,15 +73,6 @@ if [[ -z "$LINE_COVERAGE_LINE" ]]; then
 fi
 
 COVERAGE=$(echo "$LINE_COVERAGE_LINE" | awk '{print $2}' | sed 's/%//')
-
-# if awk -v cov="$COVERAGE" 'BEGIN {exit !(cov < 80)}'; then
-#     echo "❌ Test coverage is below 80%. Current coverage is $COVERAGE%. Failing the check. Opening coverage report in browser."
-#     genhtml "$COVERAGE_FILE" -o coverage/html
-#     open coverage/html/index.html
-#     exit 1
-# else
-#     echo "✅ Test coverage meets the requirement. Expected: 80%. Actual: $COVERAGE%"
-# fi
 
 if awk -v cov="$COVERAGE" -v threshold="$COVERAGE_THRESHOLD" 'BEGIN {exit !(cov >= threshold)}'; then
   echo "✅ Test coverage meets the requirement. Expected: $COVERAGE_THRESHOLD%. Actual: $COVERAGE%"
