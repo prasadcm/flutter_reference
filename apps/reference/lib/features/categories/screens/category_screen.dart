@@ -1,48 +1,30 @@
 import 'package:categories/categories.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CategoryScreen extends StatefulWidget {
+class CategoryScreen extends StatelessWidget {
   const CategoryScreen({super.key});
 
   @override
-  State<CategoryScreen> createState() => _CategoriesScreenState();
-}
-
-class _CategoriesScreenState extends State<CategoryScreen> {
-  late CategoriesBloc categoriesBloc;
-
-  @override
-  void initState() {
-    super.initState();
-    categoriesBloc = categoryLocator<CategoriesBloc>();
-    categoriesBloc.add(FetchCategories());
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => categoriesBloc,
-      child: Scaffold(
-        appBar: _appBar(),
-        body: const CategoryView(),
-      ),
+    return Scaffold(
+      appBar: _appBar(),
+      body: const CategoryView(),
     );
   }
 
   PreferredSizeWidget _appBar() {
     return AppBar(
-      title: Center(
+      title: const Center(
         child: Text(
-          "All Categories",
+          'All Categories',
           textAlign: TextAlign.center,
         ),
       ),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 15.0),
+          padding: const EdgeInsets.only(right: 15),
           child: IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () {
               // Handle search action
             },

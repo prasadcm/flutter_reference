@@ -21,7 +21,7 @@ void main() {
       final dio = builder.dio;
 
       expect(dio, isA<Dio>());
-      expect(dio.options.baseUrl, equals(testEnvironment.baseUrl));
+      expect(dio.options.baseUrl, equals('${testEnvironment.baseUrl}/api/'));
       expect(dio.options.connectTimeout, equals(const Duration(seconds: 10)));
       expect(dio.options.receiveTimeout, equals(const Duration(seconds: 10)));
       expect(dio.options.headers['Content-Type'], equals('application/json'));
@@ -43,7 +43,10 @@ void main() {
         final builder = DioBuilder(devEnvironment);
 
         // Assert
-        expect(builder.dio.options.baseUrl, equals(devEnvironment.baseUrl));
+        expect(
+          builder.dio.options.baseUrl,
+          equals('${devEnvironment.baseUrl}/api/'),
+        );
       });
 
       test('staging environment uses correct base URL', () {
@@ -54,7 +57,10 @@ void main() {
         final builder = DioBuilder(stageEnvironment);
 
         // Assert
-        expect(builder.dio.options.baseUrl, equals(stageEnvironment.baseUrl));
+        expect(
+          builder.dio.options.baseUrl,
+          equals('${stageEnvironment.baseUrl}/api/'),
+        );
       });
 
       test('production environment uses correct base URL', () {
@@ -65,7 +71,10 @@ void main() {
         final builder = DioBuilder(prodEnvironment);
 
         // Assert
-        expect(builder.dio.options.baseUrl, equals(prodEnvironment.baseUrl));
+        expect(
+          builder.dio.options.baseUrl,
+          equals('${prodEnvironment.baseUrl}/api/'),
+        );
       });
     });
 

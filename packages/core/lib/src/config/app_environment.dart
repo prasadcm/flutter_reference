@@ -3,7 +3,7 @@ enum AppEnvironmentType { development, staging, production }
 enum AppEnvironment {
   development._(
     type: AppEnvironmentType.development,
-    baseUrl: 'http://localhost:3000/api/',
+    baseUrl: 'http://localhost:3000',
   ),
   staging._(
     type: AppEnvironmentType.staging,

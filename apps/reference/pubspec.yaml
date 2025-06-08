@@ -1,6 +1,5 @@
 name: reference
 description: "A new Flutter project."
-
 publish_to: "none"
 
 version: 1.0.0
@@ -9,33 +8,35 @@ environment:
   sdk: ^3.6.1
 
 dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.8
-  flutter_bloc: ^9.0.0
-  equatable: ^2.0.3
-  ui_components:
-    path: ../../packages/ui_components
-  suggestions:
-    path: ../../packages/suggestions
   categories:
     path: ../../packages/categories
   core:
     path: ../../packages/core
+  cupertino_icons: ^1.0.8
+  equatable: ^2.0.3
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^9.0.0
+  go_router: ^14.8.0
   network:
     path: ../../packages/network
-
-  go_router: ^14.8.0
+  previously_searched:
+    path: ../../packages/previously_searched
+  suggestions:
+    path: ../../packages/suggestions
+  ui_components:
+    path: ../../packages/ui_components
+  very_good_analysis: ^7.0.0
 
 dev_dependencies:
+  bloc_test: ^10.0.0
+  flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
-
-  flutter_lints: ^5.0.0
+  get_it: ^8.0.3
   mockito: ^5.0.0
   mocktail: ^1.0.4
-  get_it: ^8.0.3
-  bloc_test: ^10.0.0
+  remove_from_coverage: ^2.0.0
 
 flutter:
   uses-material-design: true

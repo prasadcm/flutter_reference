@@ -1,11 +1,14 @@
 import 'dart:convert';
 
+import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:network/network.dart';
 import 'package:suggestions/suggestions.dart';
 
 class MockApiClient extends Mock implements ApiClient {}
+
+class MockCacheService extends Mock implements CacheService {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +17,7 @@ void main() {
     late SuggestionsRepository repository;
     late MockApiClient mockApi;
     late String mockApiData;
+    late MockCacheService mockCacheService;
 
     setUp(() {
       mockApi = MockApiClient();
@@ -31,25 +35,35 @@ void main() {
           ]
         }
         ''';
-      repository = SuggestionsRepository(mockApi);
+      mockCacheService = MockCacheService();
+
+      repository = SuggestionsRepository(
+        apiClient: mockApi,
+        cacheService: mockCacheService,
+      );
     });
 
-    tearDown(() {
-      repository.clearCache();
-    });
+    tearDown(() {});
 
     test('loadSuggestions should return list of Suggestions', () async {
       when(() => mockApi.get('suggestions')).thenAnswer((_) async {
         return jsonDecode(mockApiData) as Map<String, dynamic>;
       });
-
+      when(
+        () => mockCacheService.write<List<SuggestionModel>>(
+          key: any(named: 'key'),
+          value: any(named: 'value'),
+          ttlHrs: any(named: 'ttlHrs'),
+          encode: any(named: 'encode'),
+        ),
+      ).thenAnswer((_) async {});
       final suggestions = await repository.loadSuggestions();
 
-      expect(suggestions, isA<List<String>>());
+      expect(suggestions, isA<List<SuggestionModel>>());
       expect(suggestions.length, 2);
 
-      expect(suggestions[0], 'Fruits');
-      expect(suggestions[1], 'Vegetables');
+      expect(suggestions[0].name, 'Fruits');
+      expect(suggestions[1].name, 'Vegetables');
     });
   });
 

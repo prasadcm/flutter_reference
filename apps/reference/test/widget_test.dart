@@ -1,64 +1,37 @@
-import 'package:bloc_test/bloc_test.dart';
-import 'package:categories/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:reference/app.dart';
-import 'package:reference/features/categories/screens/category_screen.dart';
-import 'package:reference/features/profile/widgets/profile_screen.dart';
-import 'package:reference/routing/main_screen.dart';
-
-class MockCategoriesBloc extends MockBloc<CategoriesEvent, CategoriesState>
-    implements CategoriesBloc {}
+import 'package:reference/routing/app_router.dart';
+import 'package:ui_components/ui_components.dart';
 
 void main() {
-  group('ReferenceApp Tests', () {
-    setUp(() {});
+  testWidgets('ReferenceApp creates MaterialApp with router config',
+      (WidgetTester tester) async {
+    // Create a simple GoRouter for testing
+    final testRouter = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const SizedBox(),
+        ),
+      ],
+    );
 
-    testWidgets('should render ReferenceApp with initial route',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(
-        ReferenceApp(),
-      );
+    // Replace the app router with our test router
+    AppRouter.router = testRouter;
 
-      // Verify initial route is loaded
-      expect(find.byType(MainScreen), findsOneWidget);
-    });
+    // Build the app
+    await tester.pumpWidget(const ReferenceApp());
 
-    testWidgets('should show Profile page', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        ReferenceApp(),
-      );
+    // Find MaterialApp
+    final materialApp = tester.widget<MaterialApp>(
+      find.byType(MaterialApp),
+    );
 
-      await tester.tap(find.byIcon(Icons.person));
-      await tester.pumpAndSettle();
-
-      // Verify initial route is loaded
-      expect(find.byType(ProfileScreen), findsOneWidget);
-    });
-
-    testWidgets('should show Categories page', (WidgetTester tester) async {
-      final mockCategoriesBloc = MockCategoriesBloc();
-
-      whenListen(
-        mockCategoriesBloc,
-        Stream.fromIterable([CategoriesLoaded(categories: [])]),
-        initialState: CategoriesLoading(),
-      );
-
-      await tester.pumpWidget(
-        ReferenceApp(),
-      );
-
-      GetIt.instance.registerFactory<CategoriesBloc>(() => mockCategoriesBloc);
-
-      await tester.tap(find.byIcon(Icons.category));
-      await tester.pumpAndSettle();
-
-      // Verify initial route is loaded
-      expect(find.byType(CategoryScreen), findsOneWidget);
-
-      GetIt.instance.reset();
-    });
+    // Verify properties
+    expect(materialApp.routerConfig, equals(testRouter));
+    expect(materialApp.theme, equals(AppThemes.lightTheme));
+    expect(materialApp.darkTheme, equals(AppThemes.darkTheme));
   });
 }

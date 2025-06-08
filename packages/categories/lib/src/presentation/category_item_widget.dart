@@ -1,9 +1,10 @@
-import 'package:categories/src/data/category_item.dart';
+import 'package:categories/src/data/category_item_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:ui_components/ui_components.dart';
 
 class CategoryItemWidget extends StatelessWidget {
   const CategoryItemWidget({required this.item, super.key});
-  final CategoryItem item;
+  final CategoryItemViewModel item;
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +19,7 @@ class CategoryItemWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('packages/categories/${item.imageUrl}'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
+            Expanded(child: CachedImageView(url: item.imageUrl)),
             // Title and Description
             Padding(
               padding: const EdgeInsets.all(2),

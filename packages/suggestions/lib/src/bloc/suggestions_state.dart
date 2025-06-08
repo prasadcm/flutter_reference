@@ -13,9 +13,9 @@ class SuggestionsLoading extends SuggestionsState {}
 
 class SuggestionsLoaded extends SuggestionsState {
   const SuggestionsLoaded({required this.suggestions});
-  final List<String> suggestions;
+  final List<SuggestionViewModel> suggestions;
 
-  List<String> get getSuggestions => suggestions;
+  List<SuggestionViewModel> get getSuggestions => suggestions;
 
   @override
   List<Object> get props => [suggestions];
@@ -25,9 +25,9 @@ class EmptySuggestions extends SuggestionsState {}
 
 class SuggestionsFailedLoading extends SuggestionsState {
   const SuggestionsFailedLoading({this.cachedSuggestions});
-  final List<String>? cachedSuggestions;
+  final List<SuggestionViewModel>? cachedSuggestions;
 
-  List<String> get getCachedCategories => cachedSuggestions ?? [];
+  List<SuggestionViewModel> get getCachedCategories => cachedSuggestions ?? [];
 
   @override
   List<Object> get props => [cachedSuggestions ?? []];
@@ -35,9 +35,9 @@ class SuggestionsFailedLoading extends SuggestionsState {
 
 class SuggestionsOffline extends SuggestionsState {
   const SuggestionsOffline({this.cachedSuggestions});
-  final List<String>? cachedSuggestions;
+  final List<SuggestionViewModel>? cachedSuggestions;
 
-  List<String> get getCachedSuggestions => cachedSuggestions ?? [];
+  List<SuggestionViewModel> get getCachedSuggestions => cachedSuggestions ?? [];
 
   @override
   List<Object> get props => [cachedSuggestions ?? []];

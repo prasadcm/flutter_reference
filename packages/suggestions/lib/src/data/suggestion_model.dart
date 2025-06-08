@@ -2,9 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'suggestion_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class SuggestionModel {
-  SuggestionModel(this.id, this.name);
+  SuggestionModel({required this.id, required this.name});
 
   factory SuggestionModel.fromJson(Map<String, dynamic> json) =>
       _$SuggestionModelFromJson(json);

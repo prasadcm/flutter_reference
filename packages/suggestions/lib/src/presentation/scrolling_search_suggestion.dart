@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:suggestions/src/data/suggestion_view_model.dart';
 import 'package:suggestions/suggestions.dart';
 
 class ScrollingSearchSuggestion extends StatefulWidget {
-  const ScrollingSearchSuggestion({super.key});
+  const ScrollingSearchSuggestion({super.key, this.onTap});
+  final VoidCallback? onTap;
 
   @override
   ScrollingSearchSuggestionState createState() =>
@@ -21,7 +23,9 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
   bool _flipAnimation = true;
   Timer? _timer;
   int _counter = 0;
-  List<String> _suggestions = ['items'];
+  List<SuggestionViewModel> _suggestions = [
+    const SuggestionViewModel(name: 'items'),
+  ];
   String _suggestion = 'items';
 
   @override
@@ -53,7 +57,9 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
       ),
     );
 
-    context.read<SuggestionsBloc>().add(FetchSuggestions());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<SuggestionsBloc>().add(FetchSuggestions());
+    });
   }
 
   void _startScrolling() {
@@ -62,7 +68,7 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
         _flipAnimation = !_flipAnimation;
         setState(() {
           if (_suggestions.isNotEmpty) {
-            _suggestion = _suggestions[_counter];
+            _suggestion = _suggestions[_counter].name;
           }
           _controller.reset(); // Reset for next cycle
         });
@@ -95,41 +101,44 @@ class ScrollingSearchSuggestionState extends State<ScrollingSearchSuggestion>
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Container(
-            width: double.infinity,
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.grey),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.search, color: Colors.grey),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: ClipRect(
-                    child: AnimatedBuilder(
-                      animation: _controller,
-                      builder: (context, child) {
-                        return SlideTransition(
-                          position: _flipAnimation
-                              ? _scrollCenterToUp
-                              : _scrollBottomToCenter,
-                          child: Text(
-                            'Search for "$_suggestion"',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Color.fromRGBO(0, 0, 0, 1),
+          child: GestureDetector(
+            onTap: widget.onTap,
+            child: Container(
+              width: double.infinity,
+              height: 50,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.search, color: Colors.grey),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ClipRect(
+                      child: AnimatedBuilder(
+                        animation: _controller,
+                        builder: (context, child) {
+                          return SlideTransition(
+                            position: _flipAnimation
+                                ? _scrollCenterToUp
+                                : _scrollBottomToCenter,
+                            child: Text(
+                              'Search for "$_suggestion"',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Color.fromRGBO(0, 0, 0, 1),
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

@@ -1,10 +1,14 @@
+import 'dart:async';
+
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:suggestions/src/data/suggestion_view_model.dart';
 import 'package:suggestions/suggestions.dart';
 
-class MockSuggestionsRepository extends Mock implements SuggestionsRepository {}
+class MockSuggestionsBloc extends Mock implements SuggestionsBloc {}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -16,29 +20,35 @@ void main() {
   }
 
   group('ScrollingSearchSuggestion Widget Tests', () {
-    late MockSuggestionsRepository mockRepository;
-    late SuggestionsBloc suggestionBloc;
-    late List<String> mockSuggestions;
+    late MockSuggestionsBloc mockSuggestionsBloc;
+    late List<SuggestionViewModel> mockSuggestions;
+    late StreamController<SuggestionsState> stateController;
 
     setUp(() {
-      mockRepository = MockSuggestionsRepository();
-      suggestionBloc = SuggestionsBloc(suggestionsRepository: mockRepository);
+      mockSuggestionsBloc = MockSuggestionsBloc();
+      when(() => mockSuggestionsBloc.state).thenReturn(SuggestionsInitial());
+      stateController = StreamController<SuggestionsState>();
+      whenListen(
+        mockSuggestionsBloc,
+        stateController.stream,
+        initialState: SuggestionsInitial(),
+      );
       mockSuggestions = [
-        'Apple',
-        'Banana',
-        'Cherry',
+        const SuggestionViewModel(name: 'Apple'),
+        const SuggestionViewModel(name: 'Banana'),
+        const SuggestionViewModel(name: 'Cherry'),
       ];
     });
 
     tearDown(() {
-      suggestionBloc.close();
+      stateController.close();
     });
 
     Widget createWidgetUnderTest() {
-      return MaterialApp(
-        home: BlocProvider<SuggestionsBloc>.value(
-          value: suggestionBloc,
-          child: const Scaffold(
+      return BlocProvider<SuggestionsBloc>.value(
+        value: mockSuggestionsBloc,
+        child: const MaterialApp(
+          home: Scaffold(
             body: ScrollingSearchSuggestion(),
           ),
         ),
@@ -48,16 +58,14 @@ void main() {
     testWidgets(
         'should show suggestions and animate them when state is SuggestionsLoaded',
         (WidgetTester tester) async {
-      when(() => mockRepository.loadSuggestions())
-          .thenAnswer((_) async => mockSuggestions);
-      when(() => mockRepository.cachedSuggestions).thenReturn(null);
-      when(() => mockRepository.isCacheValid).thenReturn(false);
-
       await tester.pumpWidget(createWidgetUnderTest());
 
       expect(find.text('Search for "items"'), findsOneWidget);
 
       await waitForDelay(tester, Duration.zero);
+
+      stateController.add(SuggestionsLoaded(suggestions: mockSuggestions));
+      await tester.pump();
 
       await tester.pump(const Duration(milliseconds: 500));
       await tester.pumpAndSettle();

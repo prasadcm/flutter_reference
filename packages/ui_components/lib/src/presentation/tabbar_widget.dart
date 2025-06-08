@@ -12,24 +12,24 @@ class TabbarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NavigationBar(
-      selectedIndex: selectedTabIndex,
-      indicatorColor: Colors.transparent,
-      destinations: const [
-        NavigationDestination(
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      currentIndex: selectedTabIndex,
+      onTap: onTabSelected,
+      items: const [
+        BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: 'Home',
         ),
-        NavigationDestination(
+        BottomNavigationBarItem(
           icon: Icon(Icons.category),
           label: 'Categories',
         ),
-        NavigationDestination(
+        BottomNavigationBarItem(
           icon: Icon(Icons.person),
           label: 'Profile',
         ),
       ],
-      onDestinationSelected: onTabSelected,
     );
   }
 }

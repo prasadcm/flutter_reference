@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:reference/routing/app_router.dart';
 import 'package:ui_components/ui_components.dart';
-
-import 'routing/app_router.dart';
 
 class ReferenceApp extends StatelessWidget {
   const ReferenceApp({super.key});
@@ -9,10 +8,9 @@ class ReferenceApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: router,
+      routerConfig: AppRouter.router,
       theme: AppThemes.lightTheme,
       darkTheme: AppThemes.darkTheme,
-      themeMode: ThemeMode.system,
     );
   }
 }

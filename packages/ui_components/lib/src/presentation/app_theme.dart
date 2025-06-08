@@ -5,6 +5,16 @@ class AppThemes {
     brightness: Brightness.light,
     primaryColor: Colors.blue,
     scaffoldBackgroundColor: Colors.white,
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: Colors.white, // Background color
+      selectedItemColor: Colors.blue, // Selected item color
+      unselectedItemColor: Colors.grey, // Unselected item color
+      selectedLabelStyle: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.blue,
+      ),
+      unselectedLabelStyle: TextStyle(color: Colors.grey),
+    ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: Colors.white, // Background color
       indicatorColor: Colors.transparent, // Highlight for selected item
@@ -94,6 +104,16 @@ class AppThemes {
         color: Colors.white,
       ),
       iconTheme: IconThemeData(color: Colors.white),
+    ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: Colors.black, // Background color
+      selectedItemColor: Colors.blue, // Selected item color
+      unselectedItemColor: Colors.grey, // Unselected item color
+      selectedLabelStyle: TextStyle(
+        fontWeight: FontWeight.bold,
+        color: Colors.blue,
+      ),
+      unselectedLabelStyle: TextStyle(color: Colors.grey),
     ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: Colors.white, // Background color

@@ -13,9 +13,9 @@ class CategoriesLoading extends CategoriesState {}
 
 class CategoriesLoaded extends CategoriesState {
   const CategoriesLoaded({required this.categories});
-  final List<CategorySection> categories;
+  final List<CategorySectionViewModel> categories;
 
-  List<CategorySection> get getCategories => categories;
+  List<CategorySectionViewModel> get getCategories => categories;
 
   @override
   List<Object> get props => [categories];
@@ -25,9 +25,10 @@ class EmptyCategories extends CategoriesState {}
 
 class CategoriesFailedLoading extends CategoriesState {
   const CategoriesFailedLoading({this.cachedCategories});
-  final List<CategorySection>? cachedCategories;
+  final List<CategorySectionViewModel>? cachedCategories;
 
-  List<CategorySection> get getCachedCategories => cachedCategories ?? [];
+  List<CategorySectionViewModel> get getCachedCategories =>
+      cachedCategories ?? [];
 
   @override
   List<Object> get props => [cachedCategories ?? []];
@@ -35,9 +36,10 @@ class CategoriesFailedLoading extends CategoriesState {
 
 class CategoriesOffline extends CategoriesState {
   const CategoriesOffline({this.cachedCategories});
-  final List<CategorySection>? cachedCategories;
+  final List<CategorySectionViewModel>? cachedCategories;
 
-  List<CategorySection> get getCachedCategories => cachedCategories ?? [];
+  List<CategorySectionViewModel> get getCachedCategories =>
+      cachedCategories ?? [];
 
   @override
   List<Object> get props => [cachedCategories ?? []];

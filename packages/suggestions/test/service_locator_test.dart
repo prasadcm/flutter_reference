@@ -1,3 +1,4 @@
+import 'package:core/core.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mocktail/mocktail.dart';
@@ -10,16 +11,21 @@ class MockSuggestionsRepository extends Mock implements SuggestionsRepository {}
 
 class MockSuggestionsBloc extends Mock implements SuggestionsBloc {}
 
+class MockCacheService extends Mock implements CacheService {}
+
 void main() {
   group('Service Locator Tests', () {
     late GetIt testLocator;
     late MockApiClient mockApiClient;
+    late MockCacheService mockCacheService;
 
     setUp(() {
       testLocator = GetIt.instance;
       mockApiClient = MockApiClient();
+      mockCacheService = MockCacheService();
 
       GetIt.I.registerSingleton<ApiClient>(mockApiClient);
+      GetIt.I.registerSingleton<CacheService>(mockCacheService);
     });
 
     tearDown(() {
@@ -56,7 +62,7 @@ void main() {
     test('registerCachedFactory registers new instance', () {
       final testBloc = MockSuggestionsBloc();
 
-      SuggestionServiceLocator.registerCachedFactory<SuggestionsBloc>(
+      SuggestionServiceLocator.registerFactory<SuggestionsBloc>(
         testLocator,
         () => testBloc,
       );
@@ -68,11 +74,11 @@ void main() {
       final firstBloc = MockSuggestionsBloc();
       final secondBloc = MockSuggestionsBloc();
 
-      SuggestionServiceLocator.registerCachedFactory<SuggestionsBloc>(
+      SuggestionServiceLocator.registerFactory<SuggestionsBloc>(
         testLocator,
         () => firstBloc,
       );
-      SuggestionServiceLocator.registerCachedFactory<SuggestionsBloc>(
+      SuggestionServiceLocator.registerFactory<SuggestionsBloc>(
         testLocator,
         () => secondBloc,
       );

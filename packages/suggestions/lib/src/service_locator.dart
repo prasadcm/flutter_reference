@@ -1,3 +1,4 @@
+import 'package:core/core.dart';
 import 'package:get_it/get_it.dart';
 import 'package:network/network.dart';
 import 'package:suggestions/suggestions.dart';
@@ -15,25 +16,29 @@ class SuggestionServiceLocator {
     locator.registerLazySingleton<T>(factoryFunc);
   }
 
-  static void registerCachedFactory<T extends Object>(
+  static void registerFactory<T extends Object>(
     GetIt locator,
     T Function() factoryFunc,
   ) {
     if (locator.isRegistered<T>()) {
       locator.unregister<T>();
     }
-    locator.registerCachedFactory<T>(factoryFunc);
+    locator.registerFactory<T>(factoryFunc);
   }
 
   static void setup() {
     final apiClient = networkLocator<ApiClient>();
+    final cacheService = coreLocator<CacheService>();
 
     registerLazySingleton<SuggestionsRepository>(
       suggestionLocator,
-      () => SuggestionsRepository(apiClient),
+      () => SuggestionsRepository(
+        apiClient: apiClient,
+        cacheService: cacheService,
+      ),
     );
 
-    registerCachedFactory(
+    registerFactory(
       suggestionLocator,
       () => SuggestionsBloc(
         suggestionsRepository: suggestionLocator<SuggestionsRepository>(),

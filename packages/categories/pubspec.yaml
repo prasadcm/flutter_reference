@@ -8,6 +8,8 @@ environment:
 
 dependencies:
   bloc: ^9.0.0
+  core:
+    path: ../../packages/core
   equatable: ^2.0.7
   flutter:
     sdk: flutter
@@ -22,14 +24,15 @@ dependencies:
 dev_dependencies:
   bloc_test: ^10.0.0
   build_runner: ^2.4.15
+  collection: ^1.19.1
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
   json_serializable: ^6.9.4
   mocktail: ^1.0.4
+  mocktail_image_network: ^1.2.0
+  remove_from_coverage: ^2.0.0
   very_good_analysis: ^7.0.0
 
 flutter:
   uses-material-design: true
-  assets:
-    - assets/images/categories/
