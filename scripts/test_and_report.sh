@@ -19,6 +19,7 @@ PACKAGE=$(basename "$PWD")
 echo "📦 Running tests for $PACKAGE"
 
 # Run tests and redirect output to a log file
+mkdir -p coverage
 flutter test --coverage --reporter expanded --no-color > coverage/.test_output.log 2>&1
 TEST_EXIT_CODE=$?
 
