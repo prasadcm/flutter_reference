@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -eo pipefail
 trap 'echo "❌ Script failed at line $LINENO with exit code $?"' ERR
 
 LOG_FILE=".test_output.log"
