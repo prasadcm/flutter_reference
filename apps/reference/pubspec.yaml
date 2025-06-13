@@ -22,8 +22,10 @@ dependencies:
     path: ../../packages/network
   previously_searched:
     path: ../../packages/previously_searched
-  suggestions:
-    path: ../../packages/suggestions
+  search_recommendation:
+    path: ../../packages/search_recommendation
+  search_suggestion:
+    path: ../../packages/search_suggestion
   ui_components:
     path: ../../packages/ui_components
   very_good_analysis: ^7.0.0

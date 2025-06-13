@@ -8,7 +8,8 @@ import 'package:reference/features/home/home_screen.dart';
 import 'package:reference/features/profile/widgets/profile_screen.dart';
 import 'package:reference/features/search/screens/search_screen.dart';
 import 'package:reference/routing/main_screen.dart';
-import 'package:suggestions/suggestions.dart';
+import 'package:search_recommendation/search_recommendation.dart';
+import 'package:search_suggestion/search_suggestion.dart';
 
 class AppRouter {
   static late final GoRouter router;
@@ -32,8 +33,9 @@ class AppRouter {
             state,
             MultiBlocProvider(
               providers: [
-                BlocProvider<SuggestionsBloc>(
-                  create: (context) => categoryLocator<SuggestionsBloc>(),
+                BlocProvider<SearchRecommendationBloc>(
+                  create: (context) =>
+                      recommendationLocator<SearchRecommendationBloc>(),
                 ),
               ],
               child: const HomeScreen(),
@@ -62,11 +64,13 @@ class AppRouter {
       builder: (context, state) {
         return MultiBlocProvider(
           providers: [
-            BlocProvider<SuggestionsBloc>(
-              create: (context) => categoryLocator<SuggestionsBloc>(),
+            BlocProvider<SearchSuggestionBloc>(
+              create: (context) =>
+                  searchSuggestionLocator<SearchSuggestionBloc>(),
             ),
             BlocProvider<PreviouslySearchedBloc>(
-              create: (context) => categoryLocator<PreviouslySearchedBloc>(),
+              create: (context) =>
+                  previouslySearchedLocator<PreviouslySearchedBloc>(),
             ),
           ],
           child: const SearchScreen(),

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 enum IconCategory { search, error }
 
 class CachedIconView extends StatelessWidget {
-  const CachedIconView({
+  CachedIconView({
     required this.iconUrl,
     required this.defaultIcon,
     this.size = 48,
@@ -14,6 +14,7 @@ class CachedIconView extends StatelessWidget {
   final String iconUrl;
   final IconCategory defaultIcon;
   final double size;
+  late final AppEnvironment env = coreLocator<AppEnvironment>();
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +22,10 @@ class CachedIconView extends StatelessWidget {
       return defaultIconData(defaultIcon);
     }
     return CachedNetworkImage(
-      imageUrl: iconUrl,
+      imageUrl: '${env.baseUrl}/$iconUrl',
       width: size,
       height: size,
       cacheManager: IconCacheManager(),
-      placeholder: (context, url) => defaultIconData(defaultIcon),
       errorWidget: (context, url, error) => defaultIconData(defaultIcon),
     );
   }

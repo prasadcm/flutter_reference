@@ -5,17 +5,23 @@ part 'previously_searched_item.g.dart';
 @JsonSerializable(explicitToJson: true)
 class PreviouslySearchedItem {
   const PreviouslySearchedItem({
-    required this.product,
-    this.productIcon,
-    this.productUrl,
+    required this.searchText,
+    this.iconUrl,
+    this.productId,
+    this.categoryId,
+    this.type,
+    this.slug,
   });
 
   factory PreviouslySearchedItem.fromJson(Map<String, dynamic> json) =>
       _$PreviouslySearchedItemFromJson(json);
 
-  final String product;
-  final String? productIcon;
-  final String? productUrl;
+  final String searchText;
+  final String? iconUrl;
+  final String? productId;
+  final String? categoryId;
+  final String? type;
+  final String? slug;
 
   Map<String, dynamic> toJson() => _$PreviouslySearchedItemToJson(this);
 }
