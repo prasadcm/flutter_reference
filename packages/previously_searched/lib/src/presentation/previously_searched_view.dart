@@ -20,7 +20,7 @@ class PreviouslySearchedView extends StatelessWidget {
       builder: (context, state) {
         switch (state) {
           case PreviouslySearchedLoaded():
-            final items = state.previouslySearched;
+            final items = state.previouslySearchedItems;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

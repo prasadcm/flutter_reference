@@ -38,12 +38,12 @@ void main() {
       ];
       mockPreviouslySearched = [
         const PreviouslySearchedItem(
-          product: 'Grocery & Kitchen',
-          productIcon: 'test',
+          searchText: 'Grocery & Kitchen',
+          iconUrl: 'test',
         ),
         const PreviouslySearchedItem(
-          product: 'Personal Care',
-          productIcon: 'test',
+          searchText: 'Personal Care',
+          iconUrl: 'test',
         ),
       ];
       final expiry = DateTime.now().add(const Duration(hours: 1));
@@ -92,15 +92,15 @@ void main() {
       verify: (bloc) {
         final state = bloc.state as PreviouslySearchedLoaded;
         expect(
-          state.previouslySearched[0].name,
+          state.previouslySearchedItems[0].name,
           equals(mockPreviouslySearchedViewModels[0].name),
         );
         expect(
-          state.previouslySearched[0].iconUrl,
+          state.previouslySearchedItems[0].iconUrl,
           equals(mockPreviouslySearchedViewModels[0].iconUrl),
         );
         expect(
-          state.previouslySearched[1].name,
+          state.previouslySearchedItems[1].name,
           equals(mockPreviouslySearchedViewModels[1].name),
         );
       },

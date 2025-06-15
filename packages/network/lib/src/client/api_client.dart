@@ -19,7 +19,7 @@ class ApiClient {
         queryParameters: queryParams,
       );
 
-      return _processResponse(response);
+      return _processResponse(response, path);
     } on DioException catch (e) {
       print('DioException: ${e.message}');
 
@@ -29,12 +29,13 @@ class ApiClient {
 
   Map<String, dynamic> _processResponse(
     Response<Map<String, dynamic>> response,
+    String path,
   ) {
     if (response.statusCode != null &&
         response.statusCode! >= 200 &&
         response.statusCode! < 300 &&
         response.data != null) {
-      print('Response: ${response.data!}');
+      print('Request: $path. Response: ${response.data!}');
       return response.data!;
     } else {
       throw ApiException('Invalid status code: ${response.statusCode}');

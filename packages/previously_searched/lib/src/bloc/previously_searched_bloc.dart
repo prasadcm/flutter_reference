@@ -64,8 +64,8 @@ class PreviouslySearchedBloc
     return searchList
         .map(
           (item) => PreviouslySearchedItemViewModel(
-            name: item.product,
-            iconUrl: item.productIcon ?? '',
+            name: item.searchText,
+            iconUrl: item.iconUrl ?? '',
           ),
         )
         .toList();

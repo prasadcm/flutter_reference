@@ -23,16 +23,20 @@ echo "📦 Running tests for $PACKAGE"
 
 # Run tests and redirect output to a log file
 mkdir -p coverage
+set +e  # Allow command to fail without exiting the script
+trap - ERR  # Disable trap
 flutter test --coverage --reporter expanded --no-color > coverage/.test_output.log 2>&1
 TEST_EXIT_CODE=$?
+set -e # Re-enable exit-on-error
+trap 'echo "❌ Script failed at line $LINENO with exit code $?"' ERR  # Re-enable trap
+
+if [ $TEST_EXIT_CODE -ne 0 ]; then
+  echo "❌ [$PACKAGE_PATH] Some tests failed. You can see the coverage/.test_output.log file for details"
+  exit 1
+fi
 
 SUMMARY_LINE=$(tail -n 1 coverage/.test_output.log)
 echo "📋 Test Summary: $SUMMARY_LINE"
-
-if [ $TEST_EXIT_CODE -ne 0 ]; then
-  echo "❌ [$PACKAGE_PATH] Tests failed. You can see the coverage/.test_output.log file for details"
-  exit 1
-fi
 
 # Check if coverage file exists
 if [ ! -f $COVERAGE_FILE ]; then

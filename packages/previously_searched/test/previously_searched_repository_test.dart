@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:network/network.dart';
 import 'package:previously_searched/src/data/previously_searched_item.dart';
 import 'package:previously_searched/src/data/previously_searched_repository.dart';
-import 'package:previously_searched/src/data/search_item_response.dart';
+import 'package:previously_searched/src/data/previously_searched_response.dart';
 
 class MockApiClient extends Mock implements ApiClient {}
 
@@ -32,25 +32,26 @@ void main() {
     setUp(() {
       mockApiData = '''
         {
-          "total": 2,
-          "data": {
-            "results" : [
-              {
-                "product": "product1",
-                "productIcon": "icon1",
-                "productUrl": "url1",
-                "searchCount": 1
-              },
-              {
-                "product": "product2",
-                "productIcon": "icon2",
-                "productUrl": "url2",
-                "searchCount": 2
-              }
-            ]
-          }
+          "data": [
+            {
+                "iconUrl": "assets/icons/products/dairy.jpg",
+                "searchText": "milk",
+                "type": "category",
+                "slug": "",
+                "productId": "",
+                "categoryId": ""
+            },
+            {
+                "iconUrl": "assets/icons/products/bath.jpg",
+                "searchText": "shampoo",
+                "type": "category",
+                "slug": "",
+                "productId": "",
+                "categoryId": ""
+            }
+          ]
         }
-        ''';
+      ''';
     });
 
     tearDown(() {});
@@ -78,12 +79,12 @@ void main() {
         expect(searchItems, isA<List<PreviouslySearchedItem>>());
         expect(searchItems.length, 2);
 
-        expect(searchItems[0].product, 'product1');
-        expect(searchItems[1].product, 'product2');
-        expect(searchItems[0].productIcon, 'icon1');
-        expect(searchItems[1].productIcon, 'icon2');
-        expect(searchItems[0].productUrl, 'url1');
-        expect(searchItems[1].productUrl, 'url2');
+        expect(searchItems[0].searchText, 'milk');
+        expect(searchItems[1].searchText, 'shampoo');
+        expect(searchItems[0].iconUrl, 'assets/icons/products/dairy.jpg');
+        expect(searchItems[1].iconUrl, 'assets/icons/products/bath.jpg');
+        expect(searchItems[0].type, 'category');
+        expect(searchItems[1].type, 'category');
       },
     );
   });
@@ -93,23 +94,25 @@ void main() {
 
     setUp(() {
       json = {
-        'product': 'product1',
-        'productIcon': 'icon1',
-        'productUrl': 'url1',
-        'searchCount': 1,
+        'iconUrl': 'assets/icons/products/bath.jpg',
+        'searchText': 'shampoo',
+        'type': 'category',
+        'slug': '',
+        'productId': '',
+        'categoryId': '',
       };
     });
 
     tearDown(() {});
 
     test('fromJson should return list of SearchItemResponse', () {
-      final searchItemResponse = SearchItemResponse.fromJson(
+      final searchItemResponse = PreviouslySearchedResponse.fromJson(
         json as Map<String, dynamic>,
       );
 
-      expect(searchItemResponse.product, 'product1');
-      expect(searchItemResponse.productIcon, 'icon1');
-      expect(searchItemResponse.productUrl, 'url1');
+      expect(searchItemResponse.searchText, 'shampoo');
+      expect(searchItemResponse.type, 'category');
+      expect(searchItemResponse.iconUrl, 'assets/icons/products/bath.jpg');
     });
   });
 
@@ -121,9 +124,12 @@ void main() {
     test('should return cached data', () {
       // Create a pre-decoded result to return
       const expectedSection = PreviouslySearchedItem(
-        product: 'product1',
-        productIcon: 'icon1',
-        productUrl: 'url1',
+        searchText: 'shampoo',
+        type: 'category',
+        iconUrl: 'assets/icons/products/bath.jpg',
+        productId: '',
+        categoryId: '',
+        slug: '',
       );
 
       final cacheEntry = CacheEntry<List<PreviouslySearchedItem>>(
@@ -145,9 +151,9 @@ void main() {
       // Assert
       expect(result, isNotNull);
       expect(result!.value.length, equals(1));
-      expect(result.value[0].product, equals('product1'));
-      expect(result.value[0].productIcon, equals('icon1'));
-      expect(result.value[0].productUrl, equals('url1'));
+      expect(result.value[0].searchText, equals('shampoo'));
+      expect(result.value[0].iconUrl, equals('assets/icons/products/bath.jpg'));
+      expect(result.value[0].type, equals('category'));
 
       // Verify the read method was called with the correct parameters
       verify(
@@ -168,7 +174,14 @@ void main() {
 
     test('should correctly decode raw data from cache', () {
       final rawData = [
-        {'product': 'product1', 'productIcon': 'icon1', 'productUrl': 'url1'},
+        {
+          'searchText': 'shampoo',
+          'iconUrl': 'assets/icons/products/bath.jpg',
+          'type': 'category',
+          'slug': '',
+          'productId': '',
+          'categoryId': '',
+        },
       ];
 
       // Instead of trying to capture the decode function, let's verify it works correctly
@@ -204,9 +217,9 @@ void main() {
       expect(result, isNotNull);
       expect(result!.value, isA<List<PreviouslySearchedItem>>());
       expect(result.value.length, equals(1));
-      expect(result.value[0].product, equals('product1'));
-      expect(result.value[0].productIcon, equals('icon1'));
-      expect(result.value[0].productUrl, equals('url1'));
+      expect(result.value[0].searchText, equals('shampoo'));
+      expect(result.value[0].iconUrl, equals('assets/icons/products/bath.jpg'));
+      expect(result.value[0].type, equals('category'));
     });
   });
 }

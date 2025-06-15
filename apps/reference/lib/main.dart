@@ -5,7 +5,8 @@ import 'package:network/network.dart';
 import 'package:previously_searched/previously_searched.dart';
 import 'package:reference/app.dart';
 import 'package:reference/routing/app_router.dart';
-import 'package:suggestions/suggestions.dart';
+import 'package:search_recommendation/search_recommendation.dart';
+import 'package:search_suggestion/search_suggestion.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,8 +15,9 @@ void main() async {
   await CoreServiceLocator.setup();
   NetworkServiceLocator.setup();
   CategoryServiceLocator.setup();
-  SuggestionServiceLocator.setup();
+  SearchRecommendationServiceLocator.setup();
   PreviouslySearchedServiceLocator.setup();
+  SearchSuggestionServiceLocator.setup();
   runApp(
     const ReferenceApp(),
   );

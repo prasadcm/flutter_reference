@@ -1,10 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get_it/get_it.dart';
 import 'package:ui_components/src/presentation/cached_icon_view.dart';
 
 void main() {
-  setUp(() {});
+  late GetIt testLocator;
+
+  setUp(() {
+    testLocator = GetIt.instance;
+  });
 
   Widget buildTestWidget({
     required String iconUrl,
@@ -45,10 +51,15 @@ void main() {
 
     testWidgets('should show CachedNetworkImage when URL is not empty',
         (WidgetTester tester) async {
+      const dev = AppEnvironment.development;
+      CoreServiceLocator.registerLazySingleton<AppEnvironment>(
+        testLocator,
+        () => dev,
+      );
       // Arrange
       await tester.pumpWidget(
         buildTestWidget(
-          iconUrl: 'https://example.com/icon.png',
+          iconUrl: 'icon.png',
           defaultIcon: IconCategory.search,
         ),
       );
@@ -59,7 +70,7 @@ void main() {
       // Get the CachedNetworkImage widget and verify its properties
       final imageWidget =
           tester.widget<CachedNetworkImage>(find.byType(CachedNetworkImage));
-      expect(imageWidget.imageUrl, equals('https://example.com/icon.png'));
+      expect(imageWidget.imageUrl, equals('http://localhost:3000/icon.png'));
       expect(imageWidget.width, equals(48));
       expect(imageWidget.height, equals(48));
     });

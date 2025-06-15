@@ -84,6 +84,8 @@ analyzer:
   exclude:
     - test/**/mock_*.dart
     - test/**/mocks/*.dart
+    - lib/**.g.dart
+
 EOF
 
 # Add coverage exclusion config file

@@ -1,7 +1,7 @@
 import 'package:core/core.dart';
 import 'package:network/network.dart';
 import 'package:previously_searched/src/data/previously_searched_item.dart';
-import 'package:previously_searched/src/data/search_item_response.dart';
+import 'package:previously_searched/src/data/previously_searched_response.dart';
 
 class PreviouslySearchedRepository {
   PreviouslySearchedRepository({
@@ -18,13 +18,13 @@ class PreviouslySearchedRepository {
         // TODO(me): Apply the phone number dynamically.
         '${ApiEndpoints.previouslySearched}?phone_number=9980200445',
       );
-      final responseData = response['data'] as Map<String, dynamic>;
-      final jsonList = responseData['results'] as List<dynamic>;
+      final jsonList = response['data'] as List<dynamic>;
       final searchList =
           jsonList
               .map(
-                (json) =>
-                    SearchItemResponse.fromJson(json as Map<String, dynamic>),
+                (json) => PreviouslySearchedResponse.fromJson(
+                  json as Map<String, dynamic>,
+                ),
               )
               .toList();
       final previouslySearchedItems = _transform(searchList);
@@ -58,7 +58,7 @@ class PreviouslySearchedRepository {
       await cacheService.write<List<PreviouslySearchedItem>>(
         key: 'PreviouslySearched',
         value: categories,
-        ttlHrs: 2,
+        ttlHrs: 8,
         encode:
             (sections) => sections.map((section) => section.toJson()).toList(),
       );
@@ -71,13 +71,18 @@ class PreviouslySearchedRepository {
     _cacheEntry = null;
   }
 
-  List<PreviouslySearchedItem> _transform(List<SearchItemResponse> searchList) {
+  List<PreviouslySearchedItem> _transform(
+    List<PreviouslySearchedResponse> searchList,
+  ) {
     return searchList
         .map(
           (item) => PreviouslySearchedItem(
-            product: item.product,
-            productIcon: item.productIcon,
-            productUrl: item.productUrl,
+            searchText: item.searchText,
+            iconUrl: item.iconUrl,
+            productId: item.productId,
+            categoryId: item.categoryId,
+            type: item.type,
+            slug: item.slug,
           ),
         )
         .toList();

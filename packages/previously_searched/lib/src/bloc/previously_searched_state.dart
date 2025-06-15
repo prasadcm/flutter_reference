@@ -15,9 +15,6 @@ class PreviouslySearchedLoaded extends PreviouslySearchedState {
   const PreviouslySearchedLoaded({required this.previouslySearchedItems});
   final List<PreviouslySearchedItemViewModel> previouslySearchedItems;
 
-  List<PreviouslySearchedItemViewModel> get previouslySearched =>
-      previouslySearchedItems;
-
   @override
   List<Object> get props => [previouslySearchedItems];
 }
@@ -28,7 +25,7 @@ class PreviouslySearchedFailedLoading extends PreviouslySearchedState {
   const PreviouslySearchedFailedLoading({this.cachedPreviouslySearched});
   final List<PreviouslySearchedItemViewModel>? cachedPreviouslySearched;
 
-  List<PreviouslySearchedItemViewModel> get getCachedPreviouslySearched =>
+  List<PreviouslySearchedItemViewModel> get cachedPreviouslySearchedItems =>
       cachedPreviouslySearched ?? [];
 
   @override
@@ -39,7 +36,7 @@ class PreviouslySearchedOffline extends PreviouslySearchedState {
   const PreviouslySearchedOffline({this.cachedPreviouslySearched});
   final List<PreviouslySearchedItemViewModel>? cachedPreviouslySearched;
 
-  List<PreviouslySearchedItemViewModel> get getCachedPreviouslySearched =>
+  List<PreviouslySearchedItemViewModel> get cachedPreviouslySearchedItems =>
       cachedPreviouslySearched ?? [];
 
   @override
